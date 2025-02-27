@@ -98,7 +98,101 @@ Take a look at the following links to learn some techniques:
 After the user story text, you should add a draft of the corresponding user interfaces, a simple mockup or draft, if applicable.
 
 **Acceptance tests**.
-For each user story you should write also the acceptance tests (textually in [Gherkin](https://cucumber.io/docs/gherkin/reference/)), i.e., a description of scenarios (situations) that will help to confirm that the system satisfies the requirements addressed by the user story.
+1.
+Scenario: Successfully adding a food item 
+Given I am a logged-in user on the "Add Item" page
+When I enter the food item´s name, description, category, and expiration date
+And I click "Submit"
+Then the item should appear in my donate list and in the browsing page.
+
+Scenario: Attempt to add a food item with missing required fields
+Given I am a logged- in user on the "Add Item" page
+When I leave the name or expiration date blank
+And I click "Submit"
+Then I should see an error message indicating required fields are missing
+
+2.
+Scenario: Successfully removing a food item
+Given I have at least one item in my donate list
+When I select an item and click "Remove"
+Then the item should no longer appear in my donate list and the browsing page
+
+Scenario: Removing a food item that has already been requested
+Given I have a food item in my donate list that has a pending request
+When I try to remove it
+Then I should see a warning message asking for confirmation
+And If I confirm, the item should be removed 
+And the request should be canceled
+And the system should notify the other user
+
+3.
+Scenario: Successfully accepting a donation
+Given I am on the "Browse Items" page
+And a donation item is available
+When I click "Request Item"
+Then the donor should receive a notification of my request
+
+Scenario: Attempting to request an already claimed item
+Given another user has already claimed an item
+When I try to request it
+Then I should see a message saying "This item is no longer available"
+
+4.
+Scenario: Successfully sending a trade offer
+Given I am on the "Browse Items" page
+When I click "Propose Exchange" on an available exchangeable item
+And I select one of my own listed items for the trade
+And I click "Submit Offer"
+Then the donor should receive a notification of my trade proposal
+
+Scenario: Attempting to send a trade offer without an available item
+Given I have no items listed for donation
+When I try to propose a trade
+Then I should see a message saying "You need to list an item first"
+
+5.
+Scenario: Successfully accepting a trade offer
+Given I have received a trade offer notification
+When I open the trade request
+And I click "Accept Offer"
+Then a confirmation message should appear
+And the system should notify the other user
+
+Scenario: Declining a trade offer
+Given I have received a trade offer
+When I click "Decline Offer"
+Then the sender should receive a notification that the offer has been rejected
+And I should see an option to "Make a New Offer" or "Cancel"
+When I choose "Make a new Offer"
+Then I should be able to select items from my items list
+When I choose "Cancel"
+Then the trade request should be permanently declined
+
+6.
+Scenario: Successfully changing neighborhood
+Given I am on my profile settings page
+When I change my home location
+And I click "Save Changes"
+Then my browsing and item listing should be available for the updated location´s neighborhood
+
+Scenario: Attempting to change to an invalid location
+Given I am on my profile settings page
+When I enter an invalid address
+And I click "Save Changes"
+Then I should see an error message indicating the address is invalid
+
+7.
+Scenario: Successfully receiving a request notification
+Given I have an item listed on the browsing page
+And a user sends a request for it
+Then I should receive a notification that my item has been requested
+
+Scenario: Receiving multiple request for the same item
+Given I have an item listed on the browsing page
+And multiple users request it at the same time
+Then I should receive a separate notification for each request
+
+
 
 **Value and effort**.
 We made a scale with the MoSCoW method's categories. 
