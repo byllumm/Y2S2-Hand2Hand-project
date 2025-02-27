@@ -85,22 +85,14 @@ Take a look at the following links to learn some techniques:
 ## Requirements
 
 ### User Stories
-<!-- 
-In this section, you should describe all kinds of requirements for your module: functional and non-functional requirements.
 
-For LEIC-ES-2024-25, the requirements will be gathered and documented as user stories. 
-
-Please add in this section a concise summary of all the user stories.
-
-**User stories as GitHub Project Items**
-The user stories themselves should be created and described as items in your GitHub Project with the label "user story". 
-
-A user story is a description of a desired functionality told from the perspective of the user or customer. A starting template for the description of a user story is *As a < user role >, I want < goal > so that < reason >.*
-
-Name the item with either the full user story or a shorter name. In the “comments” field, add relevant notes, mockup images, and acceptance test scenarios, linking to the acceptance test in Gherkin when available, and finally estimate value and effort.
-
-**INVEST in good user stories**. 
-You may add more details after, but the shorter and complete, the better. In order to decide if the user story is good, please follow the [INVEST guidelines](https://xp123.com/articles/invest-in-good-stories-and-smart-tasks/).
+1 - As a user I can add food items to my donate list. (Must have this feature)
+2 - As a user I can take food items off my donate list. (Must have this feature)
+3 - As a user I can accept a donation of a neighbor. (Must have this feature)
+4 - As a user I can send a trade offer. (Must have this feature)
+5 - As a user I can accept a trade offer. (Must have this feature)
+6 - As a user I want to be able to change neighborhood. (Should have this feature)
+7 - As a donner I want to received a notification every time someone requests one of my items. (Should have this feature)
 
 **User interface mockups**.
 After the user story text, you should add a draft of the corresponding user interfaces, a simple mockup or draft, if applicable.
@@ -109,9 +101,11 @@ After the user story text, you should add a draft of the corresponding user inte
 For each user story you should write also the acceptance tests (textually in [Gherkin](https://cucumber.io/docs/gherkin/reference/)), i.e., a description of scenarios (situations) that will help to confirm that the system satisfies the requirements addressed by the user story.
 
 **Value and effort**.
-At the end, it is good to add a rough indication of the value of the user story to the customers (e.g. [MoSCoW](https://en.wikipedia.org/wiki/MoSCoW_method) method) and the team should add an estimation of the effort to implement it, for example, using points in a kind-of-a Fibonnacci scale (1,2,3,5,8,13,20,40, no idea).
-
--->
+We made a scale with the MoSCoW method's categories. 
+1 - Won't have this feature
+2 - Could have this feature
+3 - Should have this feature
+4 - Must have this feature
 
 ### Domain model
 
