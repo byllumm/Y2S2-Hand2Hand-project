@@ -1,8 +1,8 @@
-# _[your product name]_ Development Report
+# Hand2Hand Development Report
 
-Welcome to the documentation pages of _[your product name]_!
+Welcome to the documentation pages of Hand2Hand!
 
-This Software Development Report, tailored for LEIC-ES-2024-25, provides comprehensive details about _[your product name]_, from high-level vision to low-level implementation decisions. It’s organised by the following activities. 
+This Software Development Report, tailored for LEIC-ES-2024-25, provides comprehensive details about Hand2Hand, from high-level vision to low-level implementation decisions. It’s organised by the following activities. 
 
 * [Business modeling](#Business-Modelling) 
   * [Product Vision](#Product-Vision)
@@ -86,13 +86,15 @@ Take a look at the following links to learn some techniques:
 
 ### User Stories
 
-1 - As a user I can add food items to my donate list. (Must have this feature)
-2 - As a user I can take food items off my donate list. (Must have this feature)
-3 - As a user I can accept a donation of a neighbor. (Must have this feature)
-4 - As a user I can send a trade offer. (Must have this feature)
-5 - As a user I can accept a trade offer. (Must have this feature)
-6 - As a user I want to be able to change neighborhood. (Should have this feature)
-7 - As a donner I want to received a notification every time someone requests one of my items. (Should have this feature)
+1 - As a user I can add food items to my donate list. (Must have this feature)<br/>
+2 - As a user I can take food items off my donate list. (Must have this feature)<br/>
+3 - As a user I can accept a donation of a neighbor. (Must have this feature)<br/>
+4 - As a user I can send a trade offer. (Must have this feature)<br/>
+5 - As a user I can accept/decline a trade offer. (Must have this feature)<br/>
+6 - As a user I want to be able to change neighborhood. (Should have this feature)<br/>
+7 - As a donner I want to receive a notification every time someone requests one of my items. (Should have this feature)<br/>
+8 - As a user I want to be able to see the listed items in my neighbourhood. (Should have this feature)<br/>
+9 - As a user I want to be able to filter the items by category. (Should have this feature)<br/>
 
 **User interface mockups**.
 After the user story text, you should add a draft of the corresponding user interfaces, a simple mockup or draft, if applicable.
