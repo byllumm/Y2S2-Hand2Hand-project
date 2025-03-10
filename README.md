@@ -38,172 +38,185 @@ Thank you!
 ---
 ## Business Modelling
 
-Business modeling in software development involves defining the product's vision, understanding market needs, aligning features with user expectations, and setting the groundwork for strategic planning and execution.
-
 ### Product Vision
 
-<!-- 
-Start by defining a clear and concise vision for your app, to help members of the team, contributors, and users into focusing their often disparate views into a concise, visual, and short textual form. 
-
-The vision should provide a "high concept" of the product for marketers, developers, and managers.
-
-A product vision describes the essential of the product and sets the direction to where a product is headed, and what the product will deliver in the future. 
-
-**We favor a catchy and concise statement, ideally one sentence.**
-
-We suggest you use the product vision template described in the following link:
-* [How To Create A Convincing Product Vision To Guide Your Team, by uxstudioteam.com](https://uxstudioteam.com/ux-blog/product-vision/)
-
-To learn more about how to write a good product vision, please see:
-* [Vision, by scrumbook.org](http://scrumbook.org/value-stream/vision.html)
-* [Product Management: Product Vision, by ProductPlan](https://www.productplan.com/glossary/product-vision/)
-* [How to write a vision, by dummies.com](https://www.dummies.com/business/marketing/branding/how-to-write-vision-and-mission-statements-for-your-brand/)
-* [20 Inspiring Vision Statement Examples (2019 Updated), by lifehack.org](https://www.lifehack.org/articles/work/20-sample-vision-statement-for-the-new-startup.html)
--->
-
-
+  For environmentally-conscious communities, who want to reduce food waste and share surplus food, Hand2Hand is a neighborhood-sharing app that enables easy donating, exchanging, and selling of food items. Unlike traditional food banks or marketplaces, our app offers a hyper-local, real-time solution tailored for neighbors to connect effortlessly.
+  
 ### Features and Assumptions
-<!-- 
-Indicate an  initial/tentative list of high-level features - high-level capabilities or desired services of the system that are necessary to deliver benefits to the users.
- - Feature XPTO - a few words to briefly describe the feature
- - Feature ABCD - ...
-...
-
-Optionally, indicate an initial/tentative list of assumptions that you are doing about the app and dependencies of the app to other systems.
--->
+* **Food Listing and Browsing**: Users can list surplus food items that will be found on nearby users´ explorer page; 
+* **Request and Approval System**: Users can request food items which sends a notification to the item´s owner for approval;
+* **Donation, Exchange, and Selling Options**: Users can choose whether they want to donate, exchange and/or sell food items based on their preferences;
+* **Geolocation-Based Filtering**: Listings are displayed based on user´s location to ensure hyper-local exchange;
+* **Push Notifications and Alerts**: Real-time notifications for new listings, request approvals, and messages;
+* **Chat & Communication**: In-app messaging to coordinate exchanges without needing external contact methods;
 
 ### Elevator Pitch
-<!-- 
-Draft a small text to help you quickly introduce and describe your product in a short time (lift travel time ~90 seconds) and a few words (~800 characters), a technique usually known as elevator pitch.
+Hand2Hand brings neighbors together to combat food waste. Users can easily donate, exchange or sell the forgotten food in the back of their cabinets within their local community.
 
-Take a look at the following links to learn some techniques:
-* [Crafting an Elevator Pitch](https://www.mindtools.com/pages/article/elevator-pitch.htm)
-* [The Best Elevator Pitch Examples, Templates, and Tactics - A Guide to Writing an Unforgettable Elevator Speech, by strategypeak.com](https://strategypeak.com/elevator-pitch-examples/)
-* [Top 7 Killer Elevator Pitch Examples, by toggl.com](https://blog.toggl.com/elevator-pitch-examples/)
--->
+With just a few taps, people can share what they don´t need and help others nearby. More than just reducing waste, Hand2Hand fosters connections and strengthens neighborhoods - because **food should bring people together, not go to waste**. 
 
 ## Requirements
 
-### User Stories
+### User Stories & Widget Tests
+  
+**1.** 
 
-1 - As a user I can add food items to my donate list. (Must have this feature)<br/>
-2 - As a user I can take food items off my donate list. (Must have this feature)<br/>
-3 - As a user I can accept a donation of a neighbor. (Must have this feature)<br/>
-4 - As a user I can send a trade offer. (Must have this feature)<br/>
-5 - As a user I can accept/decline a trade offer. (Must have this feature)<br/>
-6 - As a user I want to be able to change neighborhood. (Should have this feature)<br/>
-7 - As a donner I want to receive a notification every time someone requests one of my items. (Should have this feature)<br/>
-8 - As a user I want to be able to see the listed items in my neighbourhood. (Should have this feature)<br/>
-9 - As a user I want to be able to filter the items by category. (Should have this feature)<br/>
+As a user I can add food items to my donate list. (Must have this feature)<br/>
 
-**User interface mockups**.
-After the user story text, you should add a draft of the corresponding user interfaces, a simple mockup or draft, if applicable.
+Scenario: Successfully adding a food item <br/>
+Given I am a logged-in user on the "Add Item" page <br/>
+When I enter the food item´s name, description, category, and expiration date <br/>
+And I click "Submit" <br/>
+Then the item should appear in my donate list and in the browsing page. <br/>
 
-**Acceptance tests**.
-1.
-Scenario: Successfully adding a food item 
-Given I am a logged-in user on the "Add Item" page
-When I enter the food item´s name, description, category, and expiration date
-And I click "Submit"
-Then the item should appear in my donate list and in the browsing page.
-
-Scenario: Attempt to add a food item with missing required fields
-Given I am a logged- in user on the "Add Item" page
-When I leave the name or expiration date blank
-And I click "Submit"
-Then I should see an error message indicating required fields are missing
-
-2.
-Scenario: Successfully removing a food item
-Given I have at least one item in my donate list
-When I select an item and click "Remove"
-Then the item should no longer appear in my donate list and the browsing page
-
-Scenario: Removing a food item that has already been requested
-Given I have a food item in my donate list that has a pending request
-When I try to remove it
-Then I should see a warning message asking for confirmation
-And If I confirm, the item should be removed 
-And the request should be canceled
-And the system should notify the other user
-
-3.
-Scenario: Successfully accepting a donation
-Given I am on the "Browse Items" page
-And a donation item is available
-When I click "Request Item"
-Then the donor should receive a notification of my request
-
-Scenario: Attempting to request an already claimed item
-Given another user has already claimed an item
-When I try to request it
-Then I should see a message saying "This item is no longer available"
-
-4.
-Scenario: Successfully sending a trade offer
-Given I am on the "Browse Items" page
-When I click "Propose Exchange" on an available exchangeable item
-And I select one of my own listed items for the trade
-And I click "Submit Offer"
-Then the donor should receive a notification of my trade proposal
-
-Scenario: Attempting to send a trade offer without an available item
-Given I have no items listed for donation
-When I try to propose a trade
-Then I should see a message saying "You need to list an item first"
-
-5.
-Scenario: Successfully accepting a trade offer
-Given I have received a trade offer notification
-When I open the trade request
-And I click "Accept Offer"
-Then a confirmation message should appear
-And the system should notify the other user
-
-Scenario: Declining a trade offer
-Given I have received a trade offer
-When I click "Decline Offer"
-Then the sender should receive a notification that the offer has been rejected
-And I should see an option to "Make a New Offer" or "Cancel"
-When I choose "Make a new Offer"
-Then I should be able to select items from my items list
-When I choose "Cancel"
-Then the trade request should be permanently declined
-
-6.
-Scenario: Successfully changing neighborhood
-Given I am on my profile settings page
-When I change my home location
-And I click "Save Changes"
-Then my browsing and item listing should be available for the updated location´s neighborhood
-
-Scenario: Attempting to change to an invalid location
-Given I am on my profile settings page
-When I enter an invalid address
-And I click "Save Changes"
-Then I should see an error message indicating the address is invalid
-
-7.
-Scenario: Successfully receiving a request notification
-Given I have an item listed on the browsing page
-And a user sends a request for it
-Then I should receive a notification that my item has been requested
-
-Scenario: Receiving multiple request for the same item
-Given I have an item listed on the browsing page
-And multiple users request it at the same time
-Then I should receive a separate notification for each request
+Scenario: Attempt to add a food item with missing required fields <br/>
+Given I am a logged- in user on the "Add Item" page <br/>
+When I leave the name or expiration date blank <br/>
+And I click "Submit" <br/>
+Then I should see an error message indicating required fields are missing <br/>
 
 
+**2.**
 
-**Value and effort**.
-We made a scale with the MoSCoW method's categories. 
-1 - Won't have this feature
-2 - Could have this feature
-3 - Should have this feature
-4 - Must have this feature
+As a user I can take food items off my donate list. (Must have this feature)<br/>
+
+Scenario: Successfully removing a food item <br/>
+Given I have at least one item in my donate list <br/>
+When I select an item and click "Remove" <br/>
+Then the item should no longer appear in my donate list and the browsing page <br/>
+
+Scenario: Removing a food item that has already been requested <br/>
+Given I have a food item in my donate list that has a pending request <br/>
+When I try to remove it <br/>
+Then I should see a warning message asking for confirmation <br/>
+And If I confirm, the item should be removed <br/>
+And the request should be canceled <br/>
+And the system should notify the other user <br/>
+
+
+**3.**
+
+As a user I can accept a donation of a neighbor. (Must have this feature)<br/>
+
+Scenario: Successfully accepting a donation <br/>
+Given I am on the "Browse Items" page <br/>
+And a donation item is available <br/>
+When I click "Request Item" <br/>
+Then the donor should receive a notification of my request <br/>
+
+Scenario: Attempting to request an already claimed item <br/>
+Given another user has already claimed an item <br/>
+When I try to request it <br/>
+Then I should see a message saying "This item is no longer available" <br/>
+
+
+**4.**
+
+As a user I can send a trade offer. (Must have this feature)<br/>
+
+Scenario: Successfully sending a trade offer <br/>
+Given I am on the "Browse Items" page <br/>
+When I click "Propose Exchange" on an available exchangeable item <br/>
+And I select one of my own listed items for the trade <br/>
+And I click "Submit Offer" <br/>
+Then the donor should receive a notification of my trade proposal <br/>
+
+Scenario: Attempting to send a trade offer without an available item <br/>
+Given I have no items listed for donation <br/>
+When I try to propose a trade <br/>
+Then I should see a message saying "You need to list an item first" <br/>
+
+
+**5.**
+
+As a user I can accept/decline a trade offer. (Must have this feature)<br/>
+
+Scenario: Successfully accepting a trade offer <br/>
+Given I have received a trade offer notification <br/>
+When I open the trade request <br/>
+And I click "Accept Offer" <br/>
+Then a confirmation message should appear <br/>
+And the system should notify the other user <br/>
+
+Scenario: Declining a trade offer <br/>
+Given I have received a trade offer <br/>
+When I click "Decline Offer" <br/>
+Then the sender should receive a notification that the offer has been rejected <br/>
+And I should see an option to "Make a New Offer" or "Cancel" <br/>
+When I choose "Make a new Offer" <br/>
+Then I should be able to select items from my items list <br/>
+When I choose "Cancel" <br/>
+Then the trade request should be permanently declined <br/>
+
+
+**6.**
+
+As a user I want to be able to change neighborhood. (Should have this feature)<br/>
+
+Scenario: Successfully changing neighborhood <br/>
+Given I am on my profile settings page <br/>
+When I change my home location <br/>
+And I click "Save Changes" <br/>
+Then my browsing and item listing should be available for the updated location´s neighborhood <br/>
+
+Scenario: Attempting to change to an invalid location <br/>
+Given I am on my profile settings page <br/>
+When I enter an invalid address <br/>
+And I click "Save Changes" <br/>
+Then I should see an error message indicating the address is invalid <br/>
+
+
+**7.**
+
+As a doner I want to receive a notification every time someone requests one of my items. (Should have this feature)<br/>
+
+Scenario: Successfully receiving a request notification <br/>
+Given I have an item listed on the browsing page <br/>
+And a user sends a request for it <br/>
+Then I should receive a notification that my item has been requested <br/>
+
+Scenario: Receiving multiple request for the same item <br/> 
+Given I have an item listed on the browsing page <br/> 
+And multiple users request it at the same time <br/> 
+Then I should receive a separate notification for each request <br/>
+
+**8.**
+As a user I want to be able to see the listed items in my neighbourhood. (Must have this feature) <br/>
+
+Scenario: Seeing the listed items in my neighborhood <br/>
+Given I am on the "Browse Items" page <br/>
+When opening or refreshing this page <br/>
+Then I should see a grid featuring the listed items in my neighborhood <br/>
+
+Scenario: No items available <br/>
+Given I am on a neighborhood with no available items <br/>
+When opening or refreshing the "Browse Items" page <br/>
+Then a message appears saying "No items available nearby"<br/>
+
+**9.**
+As a user I want to be able to filter the items by category. (Should have this feature) <br/>
+
+Scenario: Using filters by a specific category <br/>
+When searching for items in the "Browse Items" page and selecting a specific category like Bakery <br/>
+Then the list updates to only show the items that belong to that category <br/>
+
+Scenario: Reseting the filters <br/>
+When removing all the filters <br/>
+Then the "Browsing Items" page should show all the items again <br/>
+
+**Value and effort**. 
+
+We made a scale with the MoSCoW method's categories. <br/>
+
+1 - Won't have this feature <br/>
+2 - Could have this feature <br/>
+3 - Should have this feature <br/>
+4 - Must have this feature <br/>
 
 ### Domain model
+<p align="center" justify="center">
+ <img src="https://github.com/user-attachments/assets/9c13b033-bab2-4d43-9cfe-1749bd26f731"/>
+</p>
 
 <!-- 
 To better understand the context of the software system, it is useful to have a simple UML class diagram with all and only the key concepts (names, attributes) and relationships involved of the problem domain addressed by your app. 
@@ -229,15 +242,9 @@ In this section you should start by briefly describing the components of the pro
 
 
 ### Logical architecture
-<!--
-The purpose of this subsection is to document the high-level logical structure of the code (Logical View), using a UML diagram with logical packages, without the worry of allocating to components, processes or machines.
-
-It can be beneficial to present the system in a horizontal decomposition, defining layers and implementation concepts, such as the user interface, business logic and concepts.
-
-Example of _UML package diagram_ showing a _logical view_ of the Eletronic Ticketing System (to be accompanied by a short description of each package):
-
-![LogicalView](https://user-images.githubusercontent.com/9655877/160585416-b1278ad7-18d7-463c-b8c6-afa4f7ac7639.png)
--->
+<p align="center" justify="center">
+ <img src="https://github.com/user-attachments/assets/17e405ff-76d1-455c-9150-eb3e40671af4"/>
+</p>
 
 
 ### Physical architecture
