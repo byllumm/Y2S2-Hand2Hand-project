@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'home_screen.dart';
+import 'screens/home_page.dart';
 
 const supabaseUrl = 'https://fcmwinsdrdxzizfngqig.supabase.co';
 const supabaseKey =
@@ -17,10 +16,6 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hand2Hand',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: HomeScreen(),
-    );
+    return MaterialApp(home: HomePage());
   }
 }
