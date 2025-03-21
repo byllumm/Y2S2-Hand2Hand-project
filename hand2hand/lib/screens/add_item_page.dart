@@ -47,6 +47,7 @@ class _AddItemPageState extends State<AddItemPage> {
     }
   }
 
+
   // Custom input field style
   /*InputDecoration _inputDecoration(String hintText) {
     return InputDecoration(
@@ -71,6 +72,17 @@ class _AddItemPageState extends State<AddItemPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Hand2Hand',
+          style: GoogleFonts.outfit(
+            fontSize: 26,
+            color: Color.fromARGB(255, 222, 79, 79),
+          ),
+        ),
+        backgroundColor: Color.fromARGB(223, 255, 213, 63),
+        elevation: 0,
+      ),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -79,6 +91,11 @@ class _AddItemPageState extends State<AddItemPage> {
             _buildInputRow('PRODUCT', _productController),
             _buildInputRow('QUANTITY', _quantityController),
             _buildDateRow('EXP. DATE'),
+            _buildDropDownButton('DONATE/TRADE', ['Donate', 'Trade'], (value) {
+              setState(() {
+                _donateOrTrade = value;
+              });
+            }, _donateOrTrade),
           ],
         ),
       ),
@@ -86,76 +103,128 @@ class _AddItemPageState extends State<AddItemPage> {
   }
 
   Widget _buildInputRow(String label, TextEditingController controller) {
-  return Padding(
-    padding: EdgeInsets.symmetric(vertical: 8),
-    child: Row(
-      children: [
-        SizedBox(
-          width: 100, // Fixed width for labels
-          child: Text(
-            label,
-            style: GoogleFonts.redHatDisplay(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 50, 48, 48),
-            ),
-          ),
-        ),
-        Expanded(
-          child: TextField(
-            controller: controller,
-            textAlign: TextAlign.right,
-            style: TextStyle(fontSize: 14),
-            decoration: InputDecoration(
-              border: InputBorder.none, // No borders
-              hintText: 'Enter ${label.toLowerCase()}',
-              hintStyle: TextStyle(color: Colors.grey),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-// Date Picker Row
-Widget _buildDateRow(String label) {
-  return GestureDetector(
-    onTap: _selectDate,
-    child: Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
           SizedBox(
-            width: 100,
+            width: 150, // Fixed width for labels
             child: Text(
               label,
               style: GoogleFonts.redHatDisplay(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 50, 48, 48),
+                color: Color.fromARGB(255, 66, 66, 66),
               ),
             ),
           ),
           Expanded(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                _selectedDate != null
-                    ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
-                    : 'Select Date',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: _selectedDate != null ? Colors.black : Colors.grey,
-                ),
+            child: TextField(
+              controller: controller,
+              textAlign: TextAlign.right,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              decoration: InputDecoration(
+                border: InputBorder.none, // No borders
+                hintText: 'Enter ${label.toLowerCase()}',
+                hintStyle: TextStyle(color: Colors.grey),
               ),
             ),
           ),
         ],
       ),
-    ),
-  );
-}
-}
+    );
+  }
 
+  // Date Picker Row
+  Widget _buildDateRow(String label) {
+    return GestureDetector(
+      onTap: _selectDate,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 150,
+              child: Text(
+                label,
+                style: GoogleFonts.redHatDisplay(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 66, 66, 66),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  _selectedDate != null
+                      ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
+                      : 'Select Date',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: _selectedDate != null ? Colors.black : Colors.grey,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
+  Widget _buildDropDownButton(
+    String label,
+    List<String> options,
+    ValueChanged<String?> onChanged,
+    String? selectedValue,
+  ) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 180,
+            child: Text(
+              label,
+              style: GoogleFonts.redHatDisplay(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 66, 66, 66),
+              ),
+            ),
+          ),
+          Expanded(
+            child: DropdownButton<String>(
+              value: selectedValue,
+              isExpanded: true,
+              hint: Text('Select'),
+              style: TextStyle(fontWeight: FontWeight.w500, color: Colors.grey),
+              alignment: Alignment.centerRight,
+              items:
+                  options.map((String option) {
+                    return DropdownMenuItem<String>(
+                      value: option,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          option,
+                          style: GoogleFonts.openSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+              onChanged: onChanged,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

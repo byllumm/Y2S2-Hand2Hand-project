@@ -12,7 +12,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     Center(child: Text('Browse Items')),
-    AddItemPage(),
+    Center(child: Text('Add Item')),
     Center(child: Text('Notifications')),
     Center(child: Text('Profile')),
   ];
@@ -21,6 +21,12 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _selectedIndex = index;
     });
+    if (_selectedIndex == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AddItemPage()),
+      );
+    }
   }
 
   @override
