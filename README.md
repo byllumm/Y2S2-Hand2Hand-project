@@ -213,18 +213,8 @@ We made a scale with the MoSCoW method's categories. <br/>
 ### Domain model
 
 <p align="center" justify="center">
- <img src="https://github.com/user-attachments/assets/9c13b033-bab2-4d43-9cfe-1749bd26f731"/>
+ <img src="https://github.com/LEIC-ES-2024-25/2LEIC01T5/blob/master/models/domainmodel.png"/>
 </p>
-
-<!--
-To better understand the context of the software system, it is useful to have a simple UML class diagram with all and only the key concepts (names, attributes) and relationships involved of the problem domain addressed by your app.
-Also provide a short textual description of each concept (domain class).
-
-Example:
- <p align="center" justify="center">
-  <img src="https://github.com/FEUP-LEIC-ES-2022-23/templates/blob/main/images/DomainModel.png"/>
-</p>
--->
 
 ## Architecture and Design
 
@@ -245,6 +235,28 @@ In this section you should start by briefly describing the components of the pro
 </p>
 
 ### Physical architecture
+**User Client Machine**
+- **Mobile App:** Runs on user devices (Android) and provides the graphical user interface (GUI) for interacting with the platform.
+    - API Gateway: Acts as an entry point for all client requests, forwarding them to appropriate backend services.
+
+**Backend Server Machine**
+- **Notification Server:** Responsible for sending real-time push notifications to users about item requests, trades, and other users' messages.
+- **Application Logic Services:**
+    - Users Management Service: Handles user registration, authentication, and profile.
+    - Neighborhoods Management Service: Manages filtering of items based on neighborhood.
+    - Items Management Service: Controls items’ creations, updates, deletions, and availability status.
+    - Request Management Service: Manages item donation requests, interactions of users involved in request, and request status.
+    - Trade Management Service: Manages trade offers, negotiations, and trade status.
+
+**Database Machine**
+- **Database Management System:**
+    - Users Data: Stores user profiles and login credentials.
+    - Neighborhoods Data: Maintains information about all the available neighborhoods.
+    - Items Data: Keeps track of items listings, their description, availability, and category.
+<br/>
+<p align="center" justify="center">
+ <img src="https://github.com/LEIC-ES-2024-25/2LEIC01T5/blob/master/models/physicalview.png"/>
+</p>
 
 <!--
 The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams (Deployment View) or component diagrams (Implementation View), separate or integrated, showing the physical structure of the system.
