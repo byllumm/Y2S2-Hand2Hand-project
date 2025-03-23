@@ -9,23 +9,30 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  int _lastIndex = 0;
 
   final List<Widget> _pages = [
     Center(child: Text('Browse Items')),
-    Center(child: Text('Add Item')),
+    Container(),
     Center(child: Text('Notifications')),
     Center(child: Text('Profile')),
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    if (_selectedIndex == 1) {
+    if (index == 1) {
+      _lastIndex = _selectedIndex;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => AddItemPage()),
-      );
+      ).then((_) {
+        setState(() {
+          _selectedIndex = _lastIndex;
+        });
+      });
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
     }
   }
 
