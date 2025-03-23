@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/home_page.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 const supabaseUrl = 'https://fcmwinsdrdxzizfngqig.supabase.co';
 const supabaseKey =
