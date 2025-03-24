@@ -231,8 +231,9 @@ In this section you should start by briefly describing the components of the pro
 ### Logical architecture
 
 <p align="center" justify="center">
- <img src="https://github.com/user-attachments/assets/17e405ff-76d1-455c-9150-eb3e40671af4"/>
+ <img src = "https://github.com/user-attachments/assets/4e667fa4-9481-4066-b56a-d5772affd801"/>
 </p>
+
 
 ### Physical architecture
 **User Client Machine**
