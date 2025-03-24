@@ -22,6 +22,13 @@ class _AddItemPageState extends State<AddItemPage> {
   String? _selectedTradePoint; // Stores dropdown selection for trade point
   String? _donateOrTrade; // Stores dropdown selection for donation trade
   File? _selectedImage;
+  TextEditingController _quantityController = TextEditingController();
+
+  @override
+  void dispose() {
+    _quantityController.dispose();
+    super.dispose();
+  }
 
   Future<void> _selectDate() async {
     DateTime? picked = await showDatePicker(
@@ -165,7 +172,17 @@ class _AddItemPageState extends State<AddItemPage> {
       _selectedImage = null;
     });
 
-    Navigator.pop(context);
+    final newItem = {
+      'product': _productController.text,
+      'quantity': 1,
+      'expDate': _selectedDate,
+      'action': _donateOrTrade,
+      'tradePoint': _selectedTradePoint,
+      'image': _selectedImage!.path,
+      'moreInfo': _moreInfoController.text,
+    };
+
+    Navigator.pop(context, newItem);
   }
 
   @override

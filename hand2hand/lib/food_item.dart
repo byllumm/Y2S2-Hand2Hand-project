@@ -9,28 +9,24 @@ Methods:
 class FoodItem {
   final int? id;
   final String name;
-  final String description;
   final int quantity;
-  final String category;
-  final String type;
+  final String action;
+
 
   FoodItem({
     this.id,
     required this.name,
-    required this.description,
     required this.quantity,
-    required this.category,
-    required this.type,
+    required this.action,
+    
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'description': description,
       'quantity': quantity,
-      'category': category,
-      'type': type,
+      'action': action,
     };
   }
 
@@ -38,10 +34,8 @@ class FoodItem {
     return FoodItem(
       id: map['id'],
       name: map['name'],
-      description: map['description'],
       quantity: map['quantity'],
-      category: map['category'],
-      type: map['type'],
+      action: map['action'],
     );
   }
 }

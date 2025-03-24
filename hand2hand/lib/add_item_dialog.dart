@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AddItemDialog extends StatefulWidget {
-  final Function(String, String, DateTime, int, String) onAdd;
+  final Function(String, int, DateTime, String, String, String) onAdd;
 
   AddItemDialog({required this.onAdd});
 
@@ -12,10 +12,11 @@ class AddItemDialog extends StatefulWidget {
 class _AddItemDialogState extends State<AddItemDialog> {
   final _formKey = GlobalKey<FormState>();
   String name = '';
-  String description = '';
+  String details = '';
   DateTime expirationDate = DateTime.now();
   int quantity = 1;
-  String category = '';
+  String action = '';
+  String tradePoint = '';
 
   @override
   Widget build(BuildContext context) {
@@ -33,23 +34,29 @@ class _AddItemDialogState extends State<AddItemDialog> {
                     (value) => value!.isEmpty ? 'Please enter a name' : null,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Description'),
-                onSaved: (value) => description = value!,
+                decoration: InputDecoration(labelText: 'Details'),
+                onSaved: (value) => details = value!,
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Quantity'),
                 keyboardType: TextInputType.number,
-                onSaved: (value) => quantity = int.parse(value!),
+                onSaved: (value) => quantity = int.tryParse(value!) ?? 1,
                 validator:
                     (value) =>
                         value!.isEmpty ? 'Please enter a quantity' : null,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Category'),
-                onSaved: (value) => category = value!,
+                decoration: InputDecoration(labelText: 'Action'),
+                onSaved: (value) => action = value!,
+                validator:
+                    (value) => value!.isEmpty ? 'Please enter an action' : null,
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Trade Point'),
+                onSaved: (value) => tradePoint = value!,
                 validator:
                     (value) =>
-                        value!.isEmpty ? 'Please enter a category' : null,
+                        value!.isEmpty ? 'Please enter a trade point' : null,
               ),
               SizedBox(height: 10),
               Text('Expiration Date: ${expirationDate.toLocal()}'),
@@ -84,10 +91,11 @@ class _AddItemDialogState extends State<AddItemDialog> {
               _formKey.currentState!.save();
               widget.onAdd(
                 name,
-                description,
-                expirationDate,
                 quantity,
-                category,
+                expirationDate,
+                action,
+                tradePoint,
+                details,
               );
               Navigator.of(context).pop();
             }

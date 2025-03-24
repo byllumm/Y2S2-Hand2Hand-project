@@ -13,17 +13,20 @@ class SupabaseService {
 
   Future<void> addItem(
     String name,
-    String description,
-    DateTime expirationDate,
     int quantity,
-    String category,
+    DateTime expirationDate,
+    String action,
+    String tradePoint,
+    String details,
   ) async {
     final response = await _client.from('items').insert({
       'name': name,
-      'description': description,
-      'expirationDate': expirationDate.toIso8601String(),
       'quantity': quantity,
-      'category': category,
+      'expirationDate': expirationDate.toIso8601String(),
+      'action': action,
+      'tradePoint': tradePoint,
+      'details': details
+      
     });
 
     if (response == null) {
