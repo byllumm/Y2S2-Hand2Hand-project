@@ -178,6 +178,7 @@ And multiple users request it at the same time <br/>
 Then I should receive a separate notification for each request <br/>
 
 **8.**
+
 As a user I want to be able to see the listed items in my neighbourhood. (Must have this feature) <br/>
 
 Scenario: Seeing the listed items in my neighborhood <br/>
@@ -191,6 +192,7 @@ When opening or refreshing the "Browse Items" page <br/>
 Then a message appears saying "No items available nearby"<br/>
 
 **9.**
+
 As a user I want to be able to filter the items by category. (Should have this feature) <br/>
 
 Scenario: Using filters by a specific category <br/>
@@ -303,6 +305,11 @@ You can find below information and references related with the project managemen
 -->
 
 ### Sprint 0
+
+<p align="center" justify="center">
+  <img alt="Sprint_0" src="https://github.com/user-attachments/assets/4f2a9ac5-369b-418d-a170-ee218b9d2a79"/>
+</p>
+
 
 ### Sprint 1
 
