@@ -233,7 +233,7 @@ In this section you should start by briefly describing the components of the pro
 ### Logical architecture
 
 <p align="center" justify="center">
- <img src = "https://github.com/user-attachments/assets/e842c2fd-ba6a-453c-b7b8-5a8cd2825e8f)"/>
+ <img src = "https://github.com/user-attachments/assets/e842c2fd-ba6a-453c-b7b8-5a8cd2825e8f"/>
 </p>
 
 
