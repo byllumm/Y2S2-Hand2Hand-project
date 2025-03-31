@@ -238,27 +238,8 @@ In this section you should start by briefly describing the components of the pro
 
 
 ### Physical architecture
-**User Client Machine**
-- **Mobile App:** Runs on user devices (Android) and provides the graphical user interface (GUI) for interacting with the platform.
-    - API Gateway: Acts as an entry point for all client requests, forwarding them to appropriate backend services.
-
-**Backend Server Machine**
-- **Notification Server:** Responsible for sending real-time push notifications to users about item requests, trades, and other users' messages.
-- **Application Logic Services:**
-    - Users Management Service: Handles user registration, authentication, and profile.
-    - Neighborhoods Management Service: Manages filtering of items based on neighborhood.
-    - Items Management Service: Controls items’ creations, updates, deletions, and availability status.
-    - Request Management Service: Manages item donation requests, interactions of users involved in request, and request status.
-    - Trade Management Service: Manages trade offers, negotiations, and trade status.
-
-**Database Machine**
-- **Database Management System:**
-    - Users Data: Stores user profiles and login credentials.
-    - Neighborhoods Data: Maintains information about all the available neighborhoods.
-    - Items Data: Keeps track of items listings, their description, availability, and category.
-<br/>
 <p align="center" justify="center">
- <img src="https://github.com/LEIC-ES-2024-25/2LEIC01T5/blob/master/models/physicalview.png"/>
+ <img src="https://github.com/LEIC-ES-2024-25/2LEIC01T5/blob/master/models/physical-view.png"/>
 </p>
 
 <!--
