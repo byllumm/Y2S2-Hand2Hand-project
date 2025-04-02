@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../supabase_service.dart';
 import '../add_item_dialog.dart';
 import 'package:hand2hand/screens/add_item_page.dart';
+import 'dart:io';
 
 class MyItemsScreen extends StatefulWidget {
   @override
@@ -22,18 +23,22 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
     String name,
     int quantity,
     DateTime expirationDate,
-    String action,
-    String tradePoint,
-    String details,
+    int action, // 0 for offer, 1 for trade
+    double latitude,
+    double longitude,
+    String description,
+    File imageFile,
   ) async {
     try {
       await _supabaseService.addItem(
-        name,
-        quantity,
-        expirationDate,
-        action,
-        tradePoint,
-        details,
+        name, // Name
+        quantity, // Quantity
+        expirationDate, // Expiration Date
+        action, // Action: 0 for offer, 1 for trade
+        latitude, // Latitude
+        longitude, // Longitude
+        description, // Description
+        imageFile, // Image File
       );
     } catch (e) {
       print('Error adding item: $e');
@@ -48,19 +53,7 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
     }
   }
 
-void _showAddItemDialog() {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AddItemDialog(
-        onAdd: (name, quantity, expirationDate, action, tradePoint, details) {
-          _addItem(name, quantity, expirationDate, action, tradePoint, details);
-        },
-      );
-    },
-  );
-}
-
+  // Removed unused _showAddItemDialog method as it is not referenced.
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +85,7 @@ void _showAddItemDialog() {
                       Text('Exp Date: ${item['expirationDate']}'),
                       Text('Action: ${item['action']}'),
                       Text('Trade Point: ${item['tradePoint']}'),
-                      Text('Details: ${item['details']}'), 
+                      Text('Details: ${item['details']}'),
                     ],
                   ),
                   trailing: IconButton(
@@ -109,9 +102,7 @@ void _showAddItemDialog() {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => AddItemPage(),
-            ),
+            MaterialPageRoute(builder: (context) => AddItemPage()),
           );
         },
         child: Icon(Icons.add),
