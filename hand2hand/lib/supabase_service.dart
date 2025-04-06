@@ -10,12 +10,18 @@ class SupabaseService {
 
   final _client = Supabase.instance.client;
   String? _loggedInUsername; // Store the logged-in username
+  int? _userId; // Cache the logged-in user's ID
 
-  // Stream items from the Supabase database
+  // Stream items from the Supabase database for the logged-in user
   Stream<List<Map<String, dynamic>>> streamItems() {
+    if (_userId == null) {
+      throw Exception('User is not logged in or user ID not available');
+    }
+
     return _client
         .from('items')
         .stream(primaryKey: ['id'])
+        .eq('user_id', _userId!)
         .map((data) => List<Map<String, dynamic>>.from(data));
   }
 
@@ -29,23 +35,9 @@ class SupabaseService {
     String description,
     File imageFile,
   ) async {
-    if (_loggedInUsername == null) {
+    if (_loggedInUsername == null || _userId == null) {
       throw Exception('User is not logged in');
     }
-
-    // Get the user ID based on the logged-in username
-    final userResponse =
-        await _client
-            .from('User')
-            .select('id')
-            .eq('username', _loggedInUsername!)
-            .maybeSingle();
-
-    if (userResponse == null || userResponse['id'] == null) {
-      throw Exception('Error retrieving user ID');
-    }
-
-    final userId = userResponse['id'];
 
     // Upload the image to Supabase Storage
     final imagePath =
@@ -76,7 +68,7 @@ class SupabaseService {
             'longitude': longitude,
             'description': description,
             'image': imageUrl, // Save the image URL
-            'user_id': userId, // Add the user ID
+            'user_id': _userId, // Add the user ID
           }).select();
 
       print('Insert Response: $response'); // Log the response for debugging
@@ -105,18 +97,21 @@ class SupabaseService {
     final response =
         await _client
             .from('User')
-            .select('*')
+            .select('id')
             .eq('username', username)
             .eq('password', password)
             .maybeSingle();
 
-    if (response != null) {
-      _loggedInUsername = username; // Store the username after successful login
-      print('Login successful. Logged in username: $_loggedInUsername');
-      return true; // Sign-in successful
+    if (response != null && response['id'] != null) {
+      _loggedInUsername = username;
+      _userId = response['id'];
+      print(
+        'Login successful. Username: $_loggedInUsername, User ID: $_userId',
+      );
+      return true;
     } else {
       print('Login failed. Invalid username or password.');
-      return false; // Invalid credentials
+      return false;
     }
   }
 
@@ -136,4 +131,13 @@ class SupabaseService {
       'location': location,
     });
   }
+
+  void signOut() {
+    _loggedInUsername = null;
+    _userId = null;
+    print('User signed out');
+  }
+
+  String? get currentUsername => _loggedInUsername;
+  int? get currentUserId => _userId;
 }
