@@ -25,6 +25,63 @@ class SupabaseService {
         .map((data) => List<Map<String, dynamic>>.from(data));
   }
 
+  Stream<List<Map<String, dynamic>>> streamOtherUsersItems() {
+    if (_userId == null) {
+      throw Exception('User is not logged in');
+    }
+
+    return _client
+        .from('items')
+        .stream(primaryKey: ['id'])
+        .neq('user_id', _userId!)
+        .map((data) => List<Map<String, dynamic>>.from(data));
+  }
+
+  Future<Map<String, dynamic>> getItemStatus(int itemId) async {
+    final response =
+        await _client
+            .from('items')
+            .select('is_requested, is_deleted')
+            .eq('id', itemId)
+            .maybeSingle();
+
+    if (response != null) {
+      return {
+        'available': !response['is_requested'] && !response['is_deleted'],
+      };
+    }
+
+    return {'available': false};
+  }
+
+  // Request an item (mark it as requested)
+  Future<bool> requestItem(int itemId) async {
+    try {
+      final response =
+          await _client
+              .from('items')
+              .update({'is_requested': true})
+              .eq('id', itemId)
+              .select();
+
+      return response.isNotEmpty;
+    } catch (e) {
+      print('Error requesting item: $e');
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getUserById(int userId) async {
+  final response = await _client
+      .from('User')
+      .select('id, name, username, location')
+      .eq('id', userId)
+      .maybeSingle();
+
+  return response;
+}
+
+
   Future<void> addItem(
     String name,
     int quantity,
@@ -84,10 +141,16 @@ class SupabaseService {
     }
   }
 
+
   // Delete an item from the Supabase database
   Future<void> deleteItem(int id) async {
-    final response = await _client.from('items').delete().eq('id', id);
-    if (response == null) {
+    final response = await _client
+        .from('items')
+        .update({'is_deleted': true})  // Mark the item as deleted
+        .eq('id', id)
+        .select();
+        
+    if (response.isEmpty) {
       throw Exception('Error deleting item');
     }
   }

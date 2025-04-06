@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hand2hand/screens/home_page.dart';
+import 'package:hand2hand/screens/navController.dart';
 import 'supabase_service.dart';
 import 'screens/my_items_screen.dart';
 
