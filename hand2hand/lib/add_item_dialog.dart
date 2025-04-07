@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AddItemDialog extends StatefulWidget {
   final Function(String, int, DateTime, String, String, String) onAdd;
 
-  AddItemDialog({required this.onAdd});
+  const AddItemDialog({super.key, required this.onAdd});
 
   @override
   _AddItemDialogState createState() => _AddItemDialogState();

@@ -5,7 +5,7 @@ import 'package:hand2hand/screens/my_items_screen.dart';
 class ProfileScreen extends StatelessWidget {
   final Function(int) onTabChange;
 
-  ProfileScreen({required this.onTabChange});
+  const ProfileScreen({super.key, required this.onTabChange});
 
   @override
   Widget build(BuildContext context) {

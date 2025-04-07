@@ -23,7 +23,7 @@ class _AddItemPageState extends State<AddItemPage> {
   String? _selectedTradePoint; // Stores dropdown selection for trade point
   String? _donateOrTrade; // Stores dropdown selection for donation trade
   File? _selectedImage;
-  TextEditingController _quantityController = TextEditingController();
+  final TextEditingController _quantityController = TextEditingController();
 
   @override
   void dispose() {

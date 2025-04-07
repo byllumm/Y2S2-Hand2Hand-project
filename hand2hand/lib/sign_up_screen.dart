@@ -9,6 +9,8 @@ class SignUpScreen extends StatelessWidget {
   final _locationController = TextEditingController();
   final SupabaseService _supabaseService = SupabaseService();
 
+  SignUpScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -38,38 +38,47 @@ class SupabaseService {
   }
 
   Future<Map<String, dynamic>> getItemStatus(int itemId) async {
-    final response =
-        await _client
-            .from('items')
-            .select('is_requested, is_deleted')
-            .eq('id', itemId)
-            .maybeSingle();
+  final response = await _client
+      .from('items')
+      .select('is_requested, is_deleted, user_id')
+      .eq('id', itemId)
+      .maybeSingle();
 
-    if (response != null) {
-      return {
-        'available': !response['is_requested'] && !response['is_deleted'],
-      };
-    }
-
-    return {'available': false};
+  if (response != null) {
+    return {
+      'available': !response['is_requested'] && !response['is_deleted'],
+      'is_requested': response['is_requested'],
+      'is_deleted': response['is_deleted'],
+      'user_id': response['user_id'],
+    };
   }
+  return {'available': false};
+}
 
   // Request an item (mark it as requested)
   Future<bool> requestItem(int itemId) async {
-    try {
-      final response =
-          await _client
-              .from('items')
-              .update({'is_requested': true})
-              .eq('id', itemId)
-              .select();
-
-      return response.isNotEmpty;
-    } catch (e) {
-      print('Error requesting item: $e');
-      return false;
+  try {
+    final currentUserId = _userId;
+    if (currentUserId == null) {
+      throw Exception('User not logged in');
     }
+
+    final response = await _client
+        .from('items')
+        .update({
+          'is_requested': true,
+          'requested_by': currentUserId, // Track who requested it
+          'requested_at': DateTime.now().toIso8601String(),
+        })
+        .eq('id', itemId)
+        .select();
+
+    return response.isNotEmpty;
+  } catch (e) {
+    print('Error requesting item: $e');
+    return false;
   }
+}
 
   Future<Map<String, dynamic>?> getUserById(int userId) async {
   final response = await _client
@@ -130,7 +139,7 @@ class SupabaseService {
 
       print('Insert Response: $response'); // Log the response for debugging
 
-      if (response == null || response.isEmpty) {
+      if (response.isEmpty) {
         throw Exception('Error adding item: Empty response from Supabase');
       }
     } catch (e) {

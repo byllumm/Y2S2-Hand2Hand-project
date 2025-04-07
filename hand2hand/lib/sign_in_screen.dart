@@ -8,6 +8,8 @@ class SignInScreen extends StatelessWidget {
   final _passwordController = TextEditingController();
   final SupabaseService _supabaseService = SupabaseService();
 
+  SignInScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

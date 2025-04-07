@@ -5,6 +5,8 @@ import 'package:hand2hand/screens/add_item_page.dart';
 import 'dart:io';
 
 class MyItemsScreen extends StatefulWidget {
+  const MyItemsScreen({super.key});
+
   @override
   _MyItemsScreenState createState() => _MyItemsScreenState();
 }
