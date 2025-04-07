@@ -16,6 +16,7 @@ class AddItemPage extends StatefulWidget {
 }
 
 class _AddItemPageState extends State<AddItemPage> {
+  bool _isSubmitting = false;
   final TextEditingController _productController =
       TextEditingController(); // Stores food type input
   final TextEditingController _moreInfoController = TextEditingController();
@@ -26,7 +27,7 @@ class _AddItemPageState extends State<AddItemPage> {
   final TextEditingController _quantityController = TextEditingController();
 
   @override
-  void dispose() {
+  void dispose() async {
     _quantityController.dispose();
     super.dispose();
   }
@@ -344,7 +345,7 @@ class _AddItemPageState extends State<AddItemPage> {
                     ),
                   ),
                   InputQty(
-                    initVal: 1,
+                    initVal: 0,
                     minVal: 1,
                     validator: (value) {
                       if (value == null) {
@@ -563,7 +564,15 @@ class _AddItemPageState extends State<AddItemPage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _submitItem,
+                    onPressed:
+                        _isSubmitting
+                            ? null
+                            : () async {
+                              setState(() => _isSubmitting = true);
+                              await Future.delayed(Duration(seconds: 1));
+                              _submitItem();
+                              setState(() => _isSubmitting = false);
+                            },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(200, 222, 79, 79),
                       padding: EdgeInsets.symmetric(vertical: 15),
