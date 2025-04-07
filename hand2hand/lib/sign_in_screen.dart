@@ -31,6 +31,7 @@ class SignInScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               ElevatedButton(
+                key: Key('signInButton'),
                 onPressed: () async {
                   final username = _usernameController.text;
                   final password = _passwordController.text;
