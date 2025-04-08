@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hand2hand/screens/navController.dart';
 import 'supabase_service.dart';
-import 'browse_items_screen.dart';
+import 'screens/my_items_screen.dart';
 
 class SignInScreen extends StatelessWidget {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final SupabaseService _supabaseService = SupabaseService();
+
+  SignInScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +31,7 @@ class SignInScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               ElevatedButton(
+                key: Key('signInButton'),
                 onPressed: () async {
                   final username = _usernameController.text;
                   final password = _passwordController.text;
@@ -42,10 +46,10 @@ class SignInScreen extends StatelessWidget {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Sign In Successful')),
                       );
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BrowseItemsScreen(),
+                          builder: (context) => HomePage(),
                         ),
                       );
                     } else {

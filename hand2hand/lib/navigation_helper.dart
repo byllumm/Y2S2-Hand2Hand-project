@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'browse_items_screen.dart';
+import 'screens/my_items_screen.dart';
 import 'sign_up_screen.dart';
 import 'sign_in_screen.dart'; // Import the SignInScreen
 
 void navigateToBrowseItemsScreen(BuildContext context) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => BrowseItemsScreen()),
+    MaterialPageRoute(builder: (context) => MyItemsScreen()),
   );
 }
 

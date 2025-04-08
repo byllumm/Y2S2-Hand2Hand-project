@@ -6,6 +6,7 @@ import 'package:input_quantity/input_quantity.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:hand2hand/supabase_service.dart';
 
 class AddItemPage extends StatefulWidget {
   const AddItemPage({super.key});
@@ -15,6 +16,7 @@ class AddItemPage extends StatefulWidget {
 }
 
 class _AddItemPageState extends State<AddItemPage> {
+  bool _isSubmitting = false;
   final TextEditingController _productController =
       TextEditingController(); // Stores food type input
   final TextEditingController _moreInfoController = TextEditingController();
@@ -22,6 +24,13 @@ class _AddItemPageState extends State<AddItemPage> {
   String? _selectedTradePoint; // Stores dropdown selection for trade point
   String? _donateOrTrade; // Stores dropdown selection for donation trade
   File? _selectedImage;
+  final TextEditingController _quantityController = TextEditingController();
+
+  @override
+  void dispose() async {
+    _quantityController.dispose();
+    super.dispose();
+  }
 
   Future<void> _selectDate() async {
     DateTime? picked = await showDatePicker(
@@ -117,7 +126,10 @@ class _AddItemPageState extends State<AddItemPage> {
     );
   }
 
-  void _submitItem() {
+  void _submitItem() async {
+    // Print the current value of the quantity controller for debugging
+    print("QuantityController Text: '${_quantityController.text}'");
+
     if (_productController.text.isEmpty ||
         _selectedDate == null ||
         _donateOrTrade == null ||
@@ -134,11 +146,20 @@ class _AddItemPageState extends State<AddItemPage> {
       );
       return;
     }
-    if (_selectedDate!.isBefore(DateTime.now().subtract(Duration(days: 1)))) {
+
+    // Validate and parse quantity
+    int quantity;
+    try {
+      // Parse the value as a double and convert it to an integer
+      quantity = double.parse(_quantityController.text.trim()).toInt();
+      if (quantity <= 0) {
+        throw FormatException("Quantity must be greater than zero");
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Your product has expired!',
+            'Invalid quantity. Please enter a valid number.',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           backgroundColor: Color.fromARGB(235, 222, 79, 79),
@@ -147,25 +168,52 @@ class _AddItemPageState extends State<AddItemPage> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Your product was submitted successfully!',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+    final supabaseService = SupabaseService();
+
+    try {
+      await supabaseService.addItem(
+        _productController.text, // Name
+        quantity, // Quantity
+        _selectedDate!, // Expiration Date
+        _donateOrTrade == 'Trade' ? 1 : 0, // Action: 1 for Trade, 0 for Offer
+        37.7749, // Replace with actual latitude
+        -122.4194, // Replace with actual longitude
+        _moreInfoController.text, // Description
+        _selectedImage!, // Image File
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Your product was submitted successfully!',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: const Color.fromARGB(233, 65, 173, 69),
         ),
-        backgroundColor: const Color.fromARGB(233, 65, 173, 69),
-      ),
-    );
+      );
 
-    setState(() {
-      _productController.clear();
-      _selectedDate = null;
-      _donateOrTrade = null;
-      _selectedTradePoint = null;
-      _selectedImage = null;
-    });
+      // Reset the form
+      setState(() {
+        _productController.clear();
+        _quantityController.clear();
+        _selectedDate = null;
+        _donateOrTrade = null;
+        _selectedTradePoint = null;
+        _selectedImage = null;
+      });
 
-    Navigator.pop(context);
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Error adding item: $e',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Color.fromARGB(235, 222, 79, 79),
+        ),
+      );
+    }
   }
 
   @override
@@ -297,7 +345,7 @@ class _AddItemPageState extends State<AddItemPage> {
                     ),
                   ),
                   InputQty(
-                    initVal: 1,
+                    initVal: 0,
                     minVal: 1,
                     validator: (value) {
                       if (value == null) {
@@ -306,6 +354,10 @@ class _AddItemPageState extends State<AddItemPage> {
                         return "More than allowed quantity";
                       }
                       return null;
+                    },
+                    onQtyChanged: (value) {
+                      // Update the _quantityController text whenever the quantity changes
+                      _quantityController.text = value.toString();
                     },
                     decoration: QtyDecorationProps(
                       btnColor: Color.fromARGB(223, 255, 213, 63),
@@ -512,7 +564,15 @@ class _AddItemPageState extends State<AddItemPage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _submitItem,
+                    onPressed:
+                        _isSubmitting
+                            ? null
+                            : () async {
+                              setState(() => _isSubmitting = true);
+                              await Future.delayed(Duration(seconds: 1));
+                              _submitItem();
+                              setState(() => _isSubmitting = false);
+                            },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(200, 222, 79, 79),
                       padding: EdgeInsets.symmetric(vertical: 15),

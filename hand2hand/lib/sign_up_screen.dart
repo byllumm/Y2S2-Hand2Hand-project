@@ -7,7 +7,12 @@ class SignUpScreen extends StatelessWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _locationController = TextEditingController();
-  final SupabaseService _supabaseService = SupabaseService();
+  final SupabaseService _supabaseService;
+
+
+  SignUpScreen({Key? key, SupabaseService? supabaseService})
+      : _supabaseService = supabaseService ?? SupabaseService(),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +48,7 @@ class SignUpScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               ElevatedButton(
+                key: Key('signUpButton'),
                 onPressed: () async {
                   final name = _nameController.text;
                   final username = _usernameController.text;

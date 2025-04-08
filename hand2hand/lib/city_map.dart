@@ -6,13 +6,15 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
+
   @override
   _MapScreenState createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
   late final MapController _mapController;
-  LatLng _center = LatLng(41.14961, -8.61099);
+  final LatLng _center = LatLng(41.14961, -8.61099);
   LatLng? _selectedLocation;
   String? _selectedAddress;
   String? _locationName;

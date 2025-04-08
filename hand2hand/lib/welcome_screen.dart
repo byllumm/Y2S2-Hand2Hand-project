@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'navigation_helper.dart';
 
-class HomeScreen extends StatelessWidget {
+class Controller extends StatelessWidget {
+  const Controller({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
