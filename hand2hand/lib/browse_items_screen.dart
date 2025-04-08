@@ -19,13 +19,14 @@ class _BrowseItemsScreenState extends State<BrowseItemsScreen> {
   }
 
 
-  @override
+ /* @override
   void _fetchNeighborhood() async { //trying to get the neighborhood of the items
     String neighborhood = await _supabaseService.getUserNeighborhood();
     setState(() {
       itemsStream = _supabaseService.streamItems(neighborhood);
     });
   }
+*/
 
   Future<void> _addItem(
     String name,
