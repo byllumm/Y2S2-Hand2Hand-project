@@ -287,12 +287,24 @@ You can find below information and references related with the project managemen
 
 ### Sprint 0
 
+### Sprint 1
+
 <p align="center" justify="center">
-  <img alt="Sprint_0" src="https://github.com/user-attachments/assets/4f2a9ac5-369b-418d-a170-ee218b9d2a79"/>
+  <img alt="Sprint_1" src="https://github.com/user-attachments/assets/4f2a9ac5-369b-418d-a170-ee218b9d2a79"/>
+</p>
+
+<p align="center" justify="center">
+  <img alt="Sprint_1_end" src="https://github.com/user-attachments/assets/09c58d4e-7db6-476b-9df0-46a134fc333a" />
 </p>
 
 
-### Sprint 1
+During the first sprint, one of our biggest successes was completing all the user stories we had committed to. This demonstrated strong team coordination and commitment to our initial planning.
+
+Along the way, we learned that implementing features without a defined budget presents significant challenges, especially when considering third-party services or tools that might require payment.
+
+We also realized the importance of improving our testing practices. Some of the tests we planned weren’t completed in time, which means our current code coverage isn’t where it needs to be yet. Strengthening this aspect will be a priority moving forward.
+
+Additionally, we discovered that integrating map and location-based features is more complex than expected. It involves technical hurdles that we’ll need to better prepare for in the upcoming sprints.
 
 ### Sprint 2
 
