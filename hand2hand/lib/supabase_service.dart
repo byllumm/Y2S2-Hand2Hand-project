@@ -38,58 +38,97 @@ class SupabaseService {
   }
 
   Future<Map<String, dynamic>> getItemStatus(int itemId) async {
-  final response = await _client
-      .from('items')
-      .select('is_requested, is_deleted, user_id')
-      .eq('id', itemId)
-      .maybeSingle();
+    final response =
+        await _client
+            .from('items')
+            .select('is_requested, is_deleted, user_id')
+            .eq('id', itemId)
+            .maybeSingle();
 
-  if (response != null) {
-    return {
-      'available': !response['is_requested'] && !response['is_deleted'],
-      'is_requested': response['is_requested'],
-      'is_deleted': response['is_deleted'],
-      'user_id': response['user_id'],
-    };
+    if (response != null) {
+      return {
+        'available': !response['is_requested'] && !response['is_deleted'],
+        'is_requested': response['is_requested'],
+        'is_deleted': response['is_deleted'],
+        'user_id': response['user_id'],
+      };
+    }
+    return {'available': false};
   }
-  return {'available': false};
-}
 
-  // Request an item (mark it as requested)
   Future<bool> requestItem(int itemId) async {
   try {
-    final currentUserId = _userId;
-    if (currentUserId == null) {
-      throw Exception('User not logged in');
+    if (_userId == null) throw Exception('User is not logged in');
+
+    // Check if item is still available
+    final item = await getItemStatus(itemId);
+    if (!item['available']) {
+      print('Item is not available.');
+      return false;
     }
 
-    final response = await _client
-        .from('items')
-        .update({
-          'is_requested': true,
-          'requested_by': currentUserId, // Track who requested it
-          'requested_at': DateTime.now().toIso8601String(),
-        })
-        .eq('id', itemId)
-        .select();
+    // Check if the user already requested this item
+    final existing = await _client
+        .from('requests')
+        .select()
+        .eq('item_id', itemId)
+        .eq('requester_id', _userId!) 
+        .maybeSingle();
 
-    return response.isNotEmpty;
+    if (existing != null) {
+      print('User already requested this item.');
+      return false;
+    }
+
+    // Insert new request
+    final response = await _client.from('requests').insert({
+      'item_id': itemId,
+      'requester_id': _userId,
+      'owner_id': item['user_id'],
+      'status': 'pending',
+    });
+
+    return true;
   } catch (e) {
     print('Error requesting item: $e');
     return false;
   }
 }
 
-  Future<Map<String, dynamic>?> getUserById(int userId) async {
-  final response = await _client
-      .from('User')
-      .select('id, name, username, location')
-      .eq('id', userId)
-      .maybeSingle();
 
-  return response;
+  Stream<List<Map<String, dynamic>>> streamIncomingRequests() {
+  if (_userId == null) {
+    throw Exception('User not logged in');
+  }
+
+  final query = _client
+      .from('requests')
+      .select()
+      .eq('owner_id', _userId!)
+      .eq('status', 'pending')
+      .order('created_at');
+
+  return _client
+      .from('requests')
+      .stream(primaryKey: ['id'])
+      .order('created_at')
+      .map((items) => items
+          .where((item) =>
+              item['owner_id'] == _userId && item['status'] == 'pending')
+          .toList());
 }
 
+
+  Future<Map<String, dynamic>?> getUserById(int userId) async {
+    final response =
+        await _client
+            .from('User')
+            .select('id, name, username, location')
+            .eq('id', userId)
+            .maybeSingle();
+
+    return response;
+  }
 
   Future<void> addItem(
     String name,
@@ -150,15 +189,15 @@ class SupabaseService {
     }
   }
 
-
   // Delete an item from the Supabase database
   Future<void> deleteItem(int id) async {
-    final response = await _client
-        .from('items')
-        .update({'is_deleted': true})  // Mark the item as deleted
-        .eq('id', id)
-        .select();
-        
+    final response =
+        await _client
+            .from('items')
+            .update({'is_deleted': true}) // Mark the item as deleted
+            .eq('id', id)
+            .select();
+
     if (response.isEmpty) {
       throw Exception('Error deleting item');
     }
