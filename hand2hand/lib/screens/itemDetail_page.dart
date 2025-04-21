@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hand2hand/supabase_service.dart';
+import 'package:hand2hand/screens/chatscreen_page.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final Map<String, dynamic> item;
@@ -15,6 +16,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   Map<String, dynamic>? donorInfo;
   bool _requestMade = false;
   bool _isLoading = false;
+  bool _isOwnItem = false;
 
   @override
   void initState() {
@@ -22,6 +24,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     fetchDonorInfo();
 
     _checkIfRequested();
+
+    final currentUserId = SupabaseService().currentUserId;
+    _isOwnItem = currentUserId == widget.item['user_id'];
   }
 
   Future<void> _checkIfRequested() async {
@@ -102,6 +107,21 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  void _sendMessage() {
+    final receiverId = widget.item['user_id'];
+    final itemId = widget.item['id'];
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => ChatScreen(
+            itemId: itemId,
+            receiverId: receiverId,
+          ),
+      ),
+    );
   }
 
   @override
@@ -242,43 +262,47 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                         child: Column(
                           children: [
-                            OutlinedButton(
-                              onPressed: () {},
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Color.fromARGB(
-                                  223,
-                                  255,
-                                  213,
-                                  63,
+                            if(!_isOwnItem)
+                              OutlinedButton(
+                                onPressed: _sendMessage,
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Color.fromARGB(
+                                    223,
+                                    255,
+                                    213,
+                                    63,
+                                  ),
+                                  backgroundColor: Color.fromARGB(
+                                    223,
+                                    247,
+                                    247,
+                                    231,
+                                  ),
+                                  side: const BorderSide(
+                                    color: Color.fromARGB(223, 255, 213, 63),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  minimumSize: Size(
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width,
+                                    0,
+                                  ),
                                 ),
-                                backgroundColor: Color.fromARGB(
-                                  223,
-                                  247,
-                                  247,
-                                  231,
-                                ),
-                                side: const BorderSide(
-                                  color: Color.fromARGB(223, 255, 213, 63),
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                ),
-                                minimumSize: Size(
-                                  MediaQuery.of(context).size.width,
-                                  0,
+                                child: Text(
+                                  "Send a Message",
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
-                              child: Text(
-                                "Send a Message",
-                                style: GoogleFonts.outfit(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
                             const SizedBox(height: 10),
                             ElevatedButton(
                               onPressed:

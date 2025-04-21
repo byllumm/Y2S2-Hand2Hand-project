@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
+import 'package:hand2hand/message.dart';
 
 class SupabaseService {
   // Singleton implementation
@@ -11,6 +12,7 @@ class SupabaseService {
   final _client = Supabase.instance.client;
   String? _loggedInUsername; // Store the logged-in username
   int? _userId; // Cache the logged-in user's ID
+  RealtimeChannel? _messageChannel;
 
   // Stream items from the Supabase database for the logged-in user
   Stream<List<Map<String, dynamic>>> streamItems() {
@@ -208,6 +210,53 @@ class SupabaseService {
     _loggedInUsername = null;
     _userId = null;
     print('User signed out');
+  }
+
+  Future<List<Message>> getMessages(int itemId, int receiverId) async {
+    final response = await _client
+        .from('messages')
+        .select()
+        .eq('item_id', itemId)
+        .eq('receiver_id', receiverId)
+        .order('created_at', ascending: true);
+    return (response as List).map((e) => Message.fromMap(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<void> sendMessage(Message message) async {
+    final response = await _client.from('messages').insert(message.toMap());
+
+    if(response == null || response.isEmpty) {
+      throw Exception('Failed to insert message or response was empty.');
+    }
+  }
+
+  void subscribeToMessages({required int itemId, required Function(Message) onNewMessage, }) {
+    if(_userId == null) return;
+
+    _messageChannel = _client.channel('messages_channel');
+    
+    _messageChannel!.onPostgresChanges(
+      event: PostgresChangeEvent.insert,
+      schema: 'public',
+      table: 'messages',
+      callback: (payload) {
+        final data = payload.newRecord;
+        if(data == null) return;
+
+        final message = Message.fromMap(data);
+
+        if(message.itemId == itemId && (message.senderId == _userId || message.receiverId == _userId)) {
+          onNewMessage(message);
+        }
+      },
+    ).subscribe();
+  }
+
+  void unsubscribeFromMessages() {
+    if(_messageChannel != null) {
+      _client.removeChannel(_messageChannel!);
+      _messageChannel = null;
+    }
   }
 
   String? get currentUsername => _loggedInUsername;
