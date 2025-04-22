@@ -57,67 +57,72 @@ class SupabaseService {
   }
 
   Future<bool> requestItem(int itemId) async {
-  try {
-    if (_userId == null) throw Exception('User is not logged in');
+    try {
+      if (_userId == null) throw Exception('User is not logged in');
 
-    // Check if item is still available
-    final item = await getItemStatus(itemId);
-    if (!item['available']) {
-      print('Item is not available.');
+      // Check if item is still available
+      final item = await getItemStatus(itemId);
+      if (!item['available']) {
+        print('Item is not available.');
+        return false;
+      }
+
+      // Check if the user already requested this item
+      final existing =
+          await _client
+              .from('requests')
+              .select()
+              .eq('item_id', itemId)
+              .eq('requester_id', _userId!)
+              .maybeSingle();
+
+      if (existing != null) {
+        print('User already requested this item.');
+        return false;
+      }
+
+      // Insert new request
+      final response = await _client.from('requests').insert({
+        'item_id': itemId,
+        'requester_id': _userId,
+        'owner_id': item['user_id'],
+        'status': 'pending',
+      });
+
+      return true;
+    } catch (e) {
+      print('Error requesting item: $e');
       return false;
     }
-
-    // Check if the user already requested this item
-    final existing = await _client
-        .from('requests')
-        .select()
-        .eq('item_id', itemId)
-        .eq('requester_id', _userId!) 
-        .maybeSingle();
-
-    if (existing != null) {
-      print('User already requested this item.');
-      return false;
-    }
-
-    // Insert new request
-    final response = await _client.from('requests').insert({
-      'item_id': itemId,
-      'requester_id': _userId,
-      'owner_id': item['user_id'],
-      'status': 'pending',
-    });
-
-    return true;
-  } catch (e) {
-    print('Error requesting item: $e');
-    return false;
   }
-}
-
 
   Stream<List<Map<String, dynamic>>> streamIncomingRequests() {
-  if (_userId == null) {
-    throw Exception('User not logged in');
+    if (_userId == null) {
+      throw Exception('User not logged in');
+    }
+
+    final query = _client
+        .from('requests')
+        .select()
+        .eq('owner_id', _userId!)
+        .eq('status', 'pending')
+        .order('created_at');
+
+    return _client
+        .from('requests')
+        .stream(primaryKey: ['id'])
+        .order('created_at')
+        .map(
+          (items) =>
+              items
+                  .where(
+                    (item) =>
+                        item['owner_id'] == _userId &&
+                        item['status'] == 'pending',
+                  )
+                  .toList(),
+        );
   }
-
-  final query = _client
-      .from('requests')
-      .select()
-      .eq('owner_id', _userId!)
-      .eq('status', 'pending')
-      .order('created_at');
-
-  return _client
-      .from('requests')
-      .stream(primaryKey: ['id'])
-      .order('created_at')
-      .map((items) => items
-          .where((item) =>
-              item['owner_id'] == _userId && item['status'] == 'pending')
-          .toList());
-}
-
 
   Future<Map<String, dynamic>?> getUserById(int userId) async {
     final response =
@@ -135,8 +140,8 @@ class SupabaseService {
     int quantity,
     DateTime expDate,
     int action, // 0 for offer, 1 for trade
-    double latitude,
-    double longitude,
+    double latitude, // Updated to accept latitude
+    double longitude, // Updated to accept longitude
     String description,
     File imageFile,
   ) async {
@@ -169,8 +174,8 @@ class SupabaseService {
             'quantity': quantity,
             'expirationDate': expDate.toIso8601String(),
             'action': action, // 0 for offer, 1 for trade
-            'latitude': latitude,
-            'longitude': longitude,
+            'latitude': latitude, // Save latitude
+            'longitude': longitude, // Save longitude
             'description': description,
             'image': imageUrl, // Save the image URL
             'user_id': _userId, // Add the user ID
