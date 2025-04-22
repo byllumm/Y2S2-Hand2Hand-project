@@ -294,7 +294,7 @@ You can find below information and references related with the project managemen
 </p>
 
 <p align="center" justify="center">
-  <img alt="Sprint_1_end" src="https://github.com/user-attachments/assets/09c58d4e-7db6-476b-9df0-46a134fc333a" />
+  <img alt="Sprint_1_end" src="https://github.com/user-attachments/assets/4030d008-162a-4a2a-ba19-6a4cb6d799cd" />
 </p>
 
 
@@ -307,6 +307,11 @@ We also realized the importance of improving our testing practices. Some of the 
 Additionally, we discovered that integrating map and location-based features is more complex than expected. It involves technical hurdles that we’ll need to better prepare for in the upcoming sprints.
 
 ### Sprint 2
+
+<p align="center" justify="center">
+  <img alt="Sprint_2" src="https://github.com/user-attachments/assets/efa99166-b1e9-4775-b1a9-4a9de1fd8a00" />
+</p>
+
 
 ### Sprint 3
 
