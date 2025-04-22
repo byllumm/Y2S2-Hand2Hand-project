@@ -4,7 +4,7 @@ import 'package:hand2hand/screens/add_item_page.dart';
 import 'package:hand2hand/screens/explorer_page.dart';
 import 'package:hand2hand/screens/my_items_screen.dart';
 import 'package:hand2hand/screens/profile_screen.dart';
-import 'package:hand2hand/screens/explorer_page.dart';
+import 'package:hand2hand/screens/notifications_page.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     _pages = [
       ExploreItems(),
       Container(),
-      Center(child: Text('Notifications')),
+      NotificationsPage(onTabChange: _onTabChange),
       ProfileScreen(onTabChange: _onTabChange),
     ];
   }
