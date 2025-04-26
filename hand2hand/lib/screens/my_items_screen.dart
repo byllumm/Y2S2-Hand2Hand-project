@@ -4,21 +4,24 @@ import '../add_item_dialog.dart';
 import 'package:hand2hand/screens/add_item_page.dart';
 import 'dart:io';
 
+
+
 class MyItemsScreen extends StatefulWidget {
-  const MyItemsScreen({super.key});
+  final SupabaseService supabaseService;
+  MyItemsScreen({super.key, SupabaseService? service}) : supabaseService = service ?? SupabaseService();
 
   @override
   _MyItemsScreenState createState() => _MyItemsScreenState();
 }
 
 class _MyItemsScreenState extends State<MyItemsScreen> {
-  final SupabaseService _supabaseService = SupabaseService();
+
   late Stream<List<Map<String, dynamic>>> itemsStream;
 
   @override
   void initState() {
     super.initState();
-    itemsStream = _supabaseService.streamItems();
+    itemsStream = widget.supabaseService.streamItems();
   }
 
   Future<void> _addItem(
@@ -32,7 +35,7 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
     File imageFile,
   ) async {
     try {
-      await _supabaseService.addItem(
+      await widget.supabaseService.addItem(
         name, // Name
         quantity, // Quantity
         expirationDate, // Expiration Date
@@ -49,7 +52,7 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
 
   Future<void> _deleteItem(int id) async {
     try {
-      await _supabaseService.deleteItem(id);
+      await widget.supabaseService.deleteItem(id);
     } catch (e) {
       print('Error deleting item: $e');
     }
