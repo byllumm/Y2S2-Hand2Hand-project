@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hand2hand/screens/my_items_screen.dart';
 import 'package:hand2hand/supabase_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationsPage extends StatelessWidget {
   final Function(int) onTabChange;
+  final SupabaseService supabaseService;
 
-  const NotificationsPage({super.key, required this.onTabChange});
+  const NotificationsPage({super.key, required this.onTabChange, required this.supabaseService});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class NotificationsPage extends StatelessWidget {
               const SizedBox(height: 16),
               Expanded(
                 child: StreamBuilder<List<Map<String, dynamic>>>(
-                  stream: SupabaseService().streamIncomingRequests(),
+                  stream: supabaseService.streamIncomingRequests(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
