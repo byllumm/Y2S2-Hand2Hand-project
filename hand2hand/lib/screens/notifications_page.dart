@@ -7,7 +7,11 @@ class NotificationsPage extends StatelessWidget {
   final Function(int) onTabChange;
   final SupabaseService supabaseService;
 
-  const NotificationsPage({super.key, required this.onTabChange, required this.supabaseService});
+  const NotificationsPage({
+    super.key,
+    required this.onTabChange,
+    required this.supabaseService,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +88,12 @@ class NotificationsPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CircleAvatar(
-                                    backgroundColor: Color.fromARGB(106, 253, 243, 211),
+                                    backgroundColor: Color.fromARGB(
+                                      106,
+                                      253,
+                                      243,
+                                      211,
+                                    ),
                                     child: const Icon(
                                       Icons.notifications_none,
                                       color: Color.fromARGB(255, 255, 213, 63),
@@ -97,7 +106,7 @@ class NotificationsPage extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '${request['requester_name'] ?? 'Someone'} requested your item "${request['item_name'] ?? 'Unknown'}"',
+                                          '${request['requester']?['name'] ?? 'Someone'} requested your item "${request['item']?['name'] ?? 'Unknown'}"',
                                           style: GoogleFonts.inter(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
@@ -116,7 +125,7 @@ class NotificationsPage extends StatelessWidget {
                                 ],
                               ),
                               const SizedBox(height: 12),
-                              Row(
+                              /*Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   TextButton(
@@ -139,7 +148,7 @@ class NotificationsPage extends StatelessWidget {
                                     child: const Text("Decline"),
                                   ),
                                 ],
-                              ),
+                              ),*/
                             ],
                           ),
                         );

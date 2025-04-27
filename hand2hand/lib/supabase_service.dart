@@ -96,34 +96,6 @@ class SupabaseService {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> streamIncomingRequests() {
-    if (_userId == null) {
-      throw Exception('User not logged in');
-    }
-
-    final query = _client
-        .from('requests')
-        .select()
-        .eq('owner_id', _userId!)
-        .eq('status', 'pending')
-        .order('created_at');
-
-    return _client
-        .from('requests')
-        .stream(primaryKey: ['id'])
-        .order('created_at')
-        .map(
-          (items) =>
-              items
-                  .where(
-                    (item) =>
-                        item['owner_id'] == _userId &&
-                        item['status'] == 'pending',
-                  )
-                  .toList(),
-        );
-  }
-
   Future<Map<String, dynamic>?> getUserById(int userId) async {
     final response =
         await _client
@@ -134,6 +106,36 @@ class SupabaseService {
 
     return response;
   }
+
+  Future<Map<String, dynamic>?> getItemById(int itemId) async {
+  final response = await _client
+      .from('items')
+      .select('id, name')
+      .eq('id', itemId)
+      .maybeSingle();
+  return response;
+}
+
+
+  Stream<List<Map<String, dynamic>>> streamIncomingRequests() async* {
+  if (_userId == null) {
+    throw Exception('User not logged in');
+  }
+
+  while (true) {
+    final response = await _client
+        .from('requests')
+        .select('id, created_at, status, item_id, requester_id, owner_id, requester:User(name), item:item_id(name)')
+        .eq('owner_id', _userId!)
+        .eq('status', 'pending')
+        .order('created_at');
+
+    yield List<Map<String, dynamic>>.from(response);
+    await Future.delayed(Duration(seconds: 5)); // Polling every 5 seconds
+  }
+}
+
+
 
   Future<void> addItem(
     String name,
