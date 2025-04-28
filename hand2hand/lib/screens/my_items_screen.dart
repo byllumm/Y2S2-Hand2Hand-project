@@ -48,10 +48,42 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
   }
 
   Future<void> _deleteItem(int id) async {
-    try {
-      await _supabaseService.deleteItem(id);
-    } catch (e) {
-      print('Error deleting item: $e');
+    // Show a confirmation dialog before deleting the item
+    final shouldDelete =
+        await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Confirm Deletion'),
+              content: Text('Are you sure you want to delete this item?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed:
+                      () => Navigator.of(context).pop(false), // Do not delete
+                  child: Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed:
+                      () => Navigator.of(
+                        context,
+                      ).pop(true), // Proceed with deletion
+                  child: Text('Confirm'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+
+    if (shouldDelete) {
+      try {
+        await _supabaseService.deleteItem(id);
+        setState(() {
+          itemsStream = _supabaseService.streamItems();
+        });
+      } catch (e) {
+        print('Error deleting item: $e');
+      }
     }
   }
 
