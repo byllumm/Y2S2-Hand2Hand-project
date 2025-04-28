@@ -21,8 +21,16 @@ class SupabaseService {
     return _client
         .from('items')
         .stream(primaryKey: ['id'])
-        .eq('user_id', _userId!)
-        .map((data) => List<Map<String, dynamic>>.from(data));
+        .map(
+          (items) =>
+              items
+                  .where(
+                    (item) =>
+                        item['user_id'] == _userId &&
+                        item['is_deleted'] == false,
+                  )
+                  .toList(),
+        );
   }
 
   Stream<List<Map<String, dynamic>>> streamOtherUsersItems() {
@@ -201,7 +209,7 @@ class SupabaseService {
     final response =
         await _client
             .from('items')
-            .update({'is_deleted': true}) // Mark the item as deleted
+            .delete()
             .eq('id', id)
             .select();
 
