@@ -197,6 +197,7 @@ class SupabaseService {
     String password,
     String location,
   ) async {
+
     final response = await _client.from('User').insert({
       'username': username,
       'name': name,
@@ -219,15 +220,14 @@ class SupabaseService {
         .eq('item_id', itemId)
         .eq('receiver_id', receiverId)
         .order('created_at', ascending: true);
-    return (response as List).map((e) => Message.fromMap(e as Map<String, dynamic>)).toList();
+
+    final messages = response.map((e) => Message.fromMap(e)).toList();
+    return messages;
   }
 
   Future<void> sendMessage(Message message) async {
-    final response = await _client.from('messages').insert(message.toMap());
-
-    if(response == null || response.isEmpty) {
-      throw Exception('Failed to insert message or response was empty.');
-    }
+    final messageMap = message.toMap();
+    final response = await _client.from('messages').insert(messageMap);
   }
 
   void subscribeToMessages({required int itemId, required Function(Message) onNewMessage, }) {

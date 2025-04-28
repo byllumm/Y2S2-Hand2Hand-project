@@ -84,14 +84,12 @@ class _ChatScreenState extends State<ChatScreen> {
     try {
       final currentUserId = SupabaseService().currentUserId!;
       final message = Message(
-        id: 0,
         senderId: currentUserId,
         receiverId: widget.receiverId,
         itemId: widget.itemId,
         content: _controller.text,
         createdAt: DateTime.now(),
       );
-
 
       await SupabaseService().sendMessage(message);
 
