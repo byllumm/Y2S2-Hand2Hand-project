@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="799eae4b-8147-4b86-8bbb-da6d08e57b38" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/supabase_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/supabase_service.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
