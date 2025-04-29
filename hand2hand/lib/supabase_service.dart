@@ -218,7 +218,10 @@ class SupabaseService {
         .from('messages')
         .select()
         .eq('item_id', itemId)
-        .eq('receiver_id', receiverId)
+        .or(
+        'and(sender_id.eq.$_userId,receiver_id.eq.$receiverId),' +
+            'and(sender_id.eq.$receiverId,receiver_id.eq.$_userId)'
+    )
         .order('created_at', ascending: true);
 
     final messages = response.map((e) => Message.fromMap(e)).toList();
