@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
       ExploreItems(),
       Container(),
       NotificationsPage(onTabChange: _onTabChange, supabaseService: SupabaseService(),),
-      ProfileScreen(onTabChange: _onTabChange),
+      const ProfileScreen(),
     ];
   }
 
