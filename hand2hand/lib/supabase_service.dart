@@ -109,7 +109,7 @@ class SupabaseService {
   Future<Map<String, dynamic>?> getUserById(int userId) async {
     final response =
         await _client
-            .from('users')
+            .from('User')
             .select('id, name, username,email, location')
             .eq('id', userId)
             .maybeSingle();
@@ -132,7 +132,7 @@ class SupabaseService {
     required String location,
   }) async {
     await _client
-        .from('users')
+        .from('User')
         .update({
           'name': name,
           'username': username,
@@ -244,7 +244,7 @@ class SupabaseService {
   Future<bool> signIn(String username, String password) async {
     final response =
         await _client
-            .from('users')
+            .from('User')
             .select('id')
             .eq('username', username)
             .eq('password', password)
@@ -271,7 +271,7 @@ class SupabaseService {
     String password,
     String location,
   ) async {
-    final response = await _client.from('users').insert({
+    final response = await _client.from('User').insert({
       'username': username,
       'name': name,
       'email': email,
