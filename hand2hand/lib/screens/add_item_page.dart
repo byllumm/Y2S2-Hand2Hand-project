@@ -596,9 +596,10 @@ class _AddItemPageState extends State<AddItemPage> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 15),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: 235,
+                    width: 150,
                     child: Text(
                       'ACTION',
                       style: GoogleFonts.redHatDisplay(
@@ -608,14 +609,15 @@ class _AddItemPageState extends State<AddItemPage> {
                       ),
                     ),
                   ),
-                  Expanded(
+                  SizedBox(
+                    width: 150,
                     child: GestureDetector(
                       onTap: () => _showActionPopup(context),
                       child: Container(
                         height: 42,
                         padding: EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 15,
+                          vertical: 10,
+                          horizontal: 10,
                         ),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
@@ -649,9 +651,10 @@ class _AddItemPageState extends State<AddItemPage> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 15),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: 235,
+                    width: 150,
                     child: Text(
                       'CATEGORY',
                       style: GoogleFonts.redHatDisplay(
@@ -661,14 +664,15 @@ class _AddItemPageState extends State<AddItemPage> {
                       ),
                     ),
                   ),
-                  Expanded(
+                  SizedBox(
+                    width: 150,
                     child: GestureDetector(
                       onTap: () => _showCategoryPopup(context),
                       child: Container(
                         height: 42,
                         padding: EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 15,
+                          vertical: 10,
+                          horizontal: 10,
                         ),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
@@ -704,7 +708,7 @@ class _AddItemPageState extends State<AddItemPage> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 120,
+                    width: 150,
                     child: Text(
                       'TRADE POINT',
                       style: GoogleFonts.redHatDisplay(
@@ -720,7 +724,6 @@ class _AddItemPageState extends State<AddItemPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          SizedBox(width: 8),
                           Text(
                             _selectedTradePoint ?? 'Choose on Map',
                             textAlign: TextAlign.right,

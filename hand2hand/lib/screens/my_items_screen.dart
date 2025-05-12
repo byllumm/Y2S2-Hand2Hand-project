@@ -30,7 +30,7 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
     double longitude,
     String description,
     File imageFile,
-    String category,
+    String? category,
   ) async {
     try {
       await _supabaseService.addItem(

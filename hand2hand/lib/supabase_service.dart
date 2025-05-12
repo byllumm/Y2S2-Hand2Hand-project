@@ -40,11 +40,15 @@ class SupabaseService {
       throw Exception('User is not logged in');
     }
 
-    return _client
+    final query = _client
         .from('items')
-        .stream(primaryKey: ['id'])
+        .select()
         .neq('user_id', _userId!)
-        .map((data) => List<Map<String, dynamic>>.from(data));
+        .eq('is_deleted', false);
+
+    return query.asStream().map(
+      (data) => List<Map<String, dynamic>>.from(data),
+    );
   }
 
   Future<Map<String, dynamic>> getItemStatus(int itemId) async {
@@ -156,7 +160,7 @@ class SupabaseService {
     double longitude, // Updated to accept longitude
     String description,
     File imageFile,
-    String category,
+    String? category,
   ) async {
     if (_loggedInUsername == null || _userId == null) {
       throw Exception('User is not logged in');
