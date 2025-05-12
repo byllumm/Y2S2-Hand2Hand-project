@@ -116,10 +116,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => ChatScreen(
-            itemId: itemId,
-            receiverId: receiverId,
-          ),
+        builder:
+            (context) => ChatScreen(itemId: itemId, receiverId: receiverId),
       ),
     );
   }
@@ -207,6 +205,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                       "DONATE/TRADE",
                       item['action'] == 0 ? "Donate" : "Trade",
                     ),
+                    const SizedBox(height: 10),
+                    infoRow("CATEGORY", item['category'] ?? ''),
                     const SizedBox(height: 20),
                     // Description
                     Text(
@@ -262,7 +262,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                         child: Column(
                           children: [
-                            if(!_isOwnItem)
+                            if (!_isOwnItem)
                               OutlinedButton(
                                 onPressed: _sendMessage,
                                 style: OutlinedButton.styleFrom(
@@ -288,10 +288,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     vertical: 14,
                                   ),
                                   minimumSize: Size(
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width,
+                                    MediaQuery.of(context).size.width,
                                     0,
                                   ),
                                 ),

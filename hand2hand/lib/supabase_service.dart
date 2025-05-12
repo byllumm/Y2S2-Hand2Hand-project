@@ -156,6 +156,7 @@ class SupabaseService {
     double longitude, // Updated to accept longitude
     String description,
     File imageFile,
+    String category,
   ) async {
     if (_loggedInUsername == null || _userId == null) {
       throw Exception('User is not logged in');
@@ -191,6 +192,7 @@ class SupabaseService {
             'description': description,
             'image': imageUrl, // Save the image URL
             'user_id': _userId, // Add the user ID
+            'category': category, // Default category
           }).select();
 
       print('Insert Response: $response'); // Log the response for debugging
@@ -211,7 +213,7 @@ class SupabaseService {
     final response =
         await _client
             .from('items')
-            .delete()
+            .update({'is_deleted': true})
             .eq('id', id)
             .select();
 

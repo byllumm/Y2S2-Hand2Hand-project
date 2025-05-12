@@ -24,6 +24,7 @@ class _AddItemPageState extends State<AddItemPage> {
   DateTime? _selectedDate; // Stores the selected date
   String? _selectedTradePoint; // Stores dropdown selection for trade point
   String? _donateOrTrade; // Stores dropdown selection for donation trade
+  String? _selectedCategory; // Stores dropdown selection for category
   File? _selectedImage;
   final TextEditingController _quantityController = TextEditingController();
   LatLng? _selectedTradePointCoordinates; // Add this to store coordinates
@@ -129,6 +130,174 @@ class _AddItemPageState extends State<AddItemPage> {
     );
   }
 
+  void _showCategoryPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Select Category',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.redHatDisplay(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 66, 66, 66),
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(
+                  'Dairy',
+                  style: GoogleFonts.redHatDisplay(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = 'Dairy';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Drinks',
+                  style: GoogleFonts.redHatDisplay(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = 'Drinks';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Fish',
+                  style: GoogleFonts.redHatDisplay(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = 'Fish';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Fruits',
+                  style: GoogleFonts.redHatDisplay(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = 'Fruits';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Grains',
+                  style: GoogleFonts.redHatDisplay(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = 'Grains';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Meat',
+                  style: GoogleFonts.redHatDisplay(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = 'Meat';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Sweets',
+                  style: GoogleFonts.redHatDisplay(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = 'Sweets';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Vegetables',
+                  style: GoogleFonts.redHatDisplay(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = 'Vegetables';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Other',
+                  style: GoogleFonts.redHatDisplay(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = 'Other';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void _submitItem() async {
     // Print the current value of the quantity controller for debugging
     print("QuantityController Text: '${_quantityController.text}'");
@@ -137,6 +306,7 @@ class _AddItemPageState extends State<AddItemPage> {
         _selectedDate == null ||
         _donateOrTrade == null ||
         _selectedTradePoint == null ||
+        _selectedCategory == null ||
         _selectedImage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -183,6 +353,7 @@ class _AddItemPageState extends State<AddItemPage> {
         _selectedTradePointCoordinates?.longitude ?? 0.0, // Longitude
         _moreInfoController.text, // Description
         _selectedImage!, // Image File
+        _selectedCategory,
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -460,6 +631,59 @@ class _AddItemPageState extends State<AddItemPage> {
                                 fontWeight: FontWeight.w500,
                                 color:
                                     _donateOrTrade == null
+                                        ? Colors.grey
+                                        : Colors.black,
+                              ),
+                            ),
+                            Icon(Icons.arrow_drop_down),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Category options
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 15),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 235,
+                    child: Text(
+                      'CATEGORY',
+                      style: GoogleFonts.redHatDisplay(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 66, 66, 66),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _showCategoryPopup(context),
+                      child: Container(
+                        height: 42,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 15,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _selectedCategory ?? 'Select Category',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color:
+                                    _selectedCategory == null
                                         ? Colors.grey
                                         : Colors.black,
                               ),

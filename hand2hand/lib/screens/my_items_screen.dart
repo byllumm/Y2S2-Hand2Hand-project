@@ -4,7 +4,6 @@ import '../add_item_dialog.dart';
 import 'package:hand2hand/screens/add_item_page.dart';
 import 'dart:io';
 
-
 class MyItemsScreen extends StatefulWidget {
   const MyItemsScreen({super.key});
 
@@ -21,8 +20,8 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
     super.initState();
     itemsStream = _supabaseService.streamItems();
   }
- 
-Future<void> _addItem(
+
+  Future<void> _addItem(
     String name,
     int quantity,
     DateTime expirationDate,
@@ -31,6 +30,7 @@ Future<void> _addItem(
     double longitude,
     String description,
     File imageFile,
+    String category,
   ) async {
     try {
       await _supabaseService.addItem(
@@ -42,6 +42,7 @@ Future<void> _addItem(
         longitude, // Longitude
         description, // Description
         imageFile, // Image File
+        category,
       );
     } catch (e) {
       print('Error adding item: $e');
@@ -87,7 +88,7 @@ Future<void> _addItem(
       }
     }
   }
-  
+
   // Removed unused _showAddItemDialog method as it is not referenced.
 
   @override
