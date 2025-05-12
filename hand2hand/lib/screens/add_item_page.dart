@@ -29,6 +29,18 @@ class _AddItemPageState extends State<AddItemPage> {
   final TextEditingController _quantityController = TextEditingController();
   LatLng? _selectedTradePointCoordinates; // Add this to store coordinates
 
+  final List<String> _categories = [
+    'Dairy',
+    'Drinks',
+    'Fish',
+    'Fruits',
+    'Grains',
+    'Meat',
+    'Sweets',
+    'Vegetables',
+    'Other',
+  ];
+
   @override
   void dispose() async {
     _quantityController.dispose();
@@ -146,152 +158,25 @@ class _AddItemPageState extends State<AddItemPage> {
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text(
-                  'Dairy',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedCategory = 'Dairy';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'Drinks',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedCategory = 'Drinks';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'Fish',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedCategory = 'Fish';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'Fruits',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedCategory = 'Fruits';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'Grains',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedCategory = 'Grains';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'Meat',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedCategory = 'Meat';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'Sweets',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedCategory = 'Sweets';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'Vegetables',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedCategory = 'Vegetables';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'Other',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedCategory = 'Other';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+            children:
+                _categories.map((category) {
+                  return ListTile(
+                    title: Text(
+                      category,
+                      style: GoogleFonts.redHatDisplay(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        _selectedCategory = category;
+                      });
+                      Navigator.pop(context);
+                    },
+                  );
+                }).toList(),
           ),
         );
       },
