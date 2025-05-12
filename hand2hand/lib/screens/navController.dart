@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hand2hand/navigation_helper.dart';
 import 'package:hand2hand/screens/add_item_page.dart';
 import 'package:hand2hand/screens/explorer_page.dart';
+import 'package:hand2hand/screens/chatlist_page.dart';
 import 'package:hand2hand/screens/my_items_screen.dart';
 import 'package:hand2hand/screens/profile_screen.dart';
 import 'package:hand2hand/screens/explorer_page.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -71,6 +72,14 @@ class _HomePageState extends State<HomePage> {
           ),
           backgroundColor: Color.fromARGB(223, 255, 213, 63),
           elevation: 0,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.mail, color: Color.fromARGB(255, 222, 79, 79)),
+              onPressed: () {
+                navigateWithTransition(context, ChatListPage());
+              }
+            )
+          ],
         ),
         body: _pages[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(

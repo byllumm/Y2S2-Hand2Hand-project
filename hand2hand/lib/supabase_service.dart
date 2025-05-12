@@ -1,3 +1,4 @@
+import 'package:hand2hand/chatpreview.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
 import 'package:hand2hand/message.dart';
@@ -220,8 +221,7 @@ class SupabaseService {
         .eq('item_id', itemId)
         .or(
         'and(sender_id.eq.$_userId,receiver_id.eq.$receiverId),' +
-            'and(sender_id.eq.$receiverId,receiver_id.eq.$_userId)'
-    )
+        'and(sender_id.eq.$receiverId,receiver_id.eq.$_userId)')
         .order('created_at', ascending: true);
 
     final messages = response.map((e) => Message.fromMap(e)).toList();
@@ -259,6 +259,40 @@ class SupabaseService {
     if(_messageChannel != null) {
       _client.removeChannel(_messageChannel!);
       _messageChannel = null;
+    }
+  }
+
+  Future<List<ChatPreview>> getUserChats(int currentUserId) async {
+    try {
+      final response = await _client
+          .from('messages')
+          .select('*, users:receiver_id(username)')
+          .or('sender_id.eq.$currentUserId,receiver_id.eq.$currentUserId')
+          .order('created_at', ascending: false);
+
+      Map<int, ChatPreview> chatMap = {};
+
+      for (var item in response) {
+        final int senderId = item['sender_id'];
+        final int receiverId = item['receiver_id'];
+        final int otherUserId = senderId == currentUserId ? receiverId : senderId;
+
+        // Avoid adding duplicate chats
+        if (!chatMap.containsKey(otherUserId)) {
+          chatMap[otherUserId] = ChatPreview(
+            chatId: item['item_id'],
+            userId: otherUserId,
+            username: item['users']['username'],
+            lastMessage: item['content'],
+            lastMessageTime: DateTime.parse(item['created_at']),
+          );
+        }
+      }
+
+      return chatMap.values.toList();
+    } catch (e) {
+      print('Error getting user chats: $e');
+      return [];
     }
   }
 
