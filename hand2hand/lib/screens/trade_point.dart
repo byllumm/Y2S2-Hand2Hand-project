@@ -34,21 +34,43 @@ class TradePoint extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Color.fromARGB(255, 222, 79, 79)),
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              ), // Navigate to HomePage
-            );
+            Navigator.pop(context);
           },
         ),
       ),
       body: FlutterMap(
-        options: MapOptions(initialCenter: center, initialZoom: 18.0),
+        options: MapOptions(initialCenter: center, initialZoom: 13.0),
         children: [
           TileLayer(
             urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             subdomains: ['a', 'b', 'c'],
+          ),
+          CircleLayer(
+            circles: [
+              CircleMarker(
+                point: center,
+                color: Color.fromARGB(76, 0, 0, 255),
+                borderStrokeWidth: 2,
+                borderColor: Colors.blue,
+                useRadiusInMeter: true,
+                radius: 2000,
+              ),
+            ],
+          ),
+
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: center, // Center of the map
+                width: 50, // Adjust width as needed
+                height: 50, // Adjust height as needed
+                child: Icon(
+                  Icons.location_on, // Use a location pin icon
+                  color: Color.fromARGB(255, 222, 79, 79), // Red color
+                  size: 40, // Adjust size as needed
+                ),
+              ),
+            ],
           ),
         ],
       ),
