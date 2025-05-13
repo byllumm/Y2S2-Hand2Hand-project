@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hand2hand/supabase_service.dart';
 import 'package:hand2hand/screens/chatscreen_page.dart';
+import 'package:hand2hand/screens/trade_point.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final Map<String, dynamic> item;
@@ -193,9 +194,23 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     infoRow(
                       "TRADE POINT",
                       "Selected",
-                      trailing: Text(
-                        "See >",
-                        style: TextStyle(color: Colors.grey[700]),
+                      trailing: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => TradePoint(
+                                    latitude: item['latitude'],
+                                    longitude: item['longitude'],
+                                  ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "See >",
+                          style: TextStyle(color: Colors.grey[700]),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10),
