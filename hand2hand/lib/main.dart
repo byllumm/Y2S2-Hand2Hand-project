@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hand2hand/welcome_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+
 const supabaseUrl = 'https://fcmwinsdrdxzizfngqig.supabase.co';
 const supabaseKey =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjbXdpbnNkcmR4eml6Zm5ncWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1NzYyMDcsImV4cCI6MjA1ODE1MjIwN30.1Zl6Zj-4VxMKi6SXOwR9CunaXMAhWMyZi-mMVn6rx7Y';
@@ -11,6 +12,7 @@ Future<void> main() async {
 
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
 
+  
   runApp(MyApp());
 }
 
