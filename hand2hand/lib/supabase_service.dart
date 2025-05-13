@@ -106,6 +106,71 @@ class SupabaseService {
     }
   }
 
+  Future<void> respondToRequest({
+    required int requestId,
+    required bool accepted,
+  }) async {
+    if (_userId == null) throw Exception('User not logged in');
+
+    final responseText = accepted ? "accepted" : "declined";
+
+    // 1. Update the request's status
+    await _client
+        .from('requests')
+        .update({'status': responseText})
+        .eq('id', requestId);
+
+    // 2. Fetch request details
+    final request =
+        await _client
+            .from('requests')
+            .select('requester_id, item_id')
+            .eq('id', requestId)
+            .maybeSingle();
+
+    if (request == null) return;
+
+    final requesterId = request['requester_id'];
+    final itemId = request['item_id'];
+
+    // 3. Get item name for message
+    final item = await getItemById(itemId);
+    final itemName = item?['name'] ?? 'your item';
+
+    // 4. (Optional) Fetch current user details for better messaging
+    final currentUser = await getCurrentUserData();
+    final currentUserName = currentUser?['name'] ?? 'Someone';
+
+    // 5. Insert a notification
+    await _client.from('notifications').insert({
+      'recipient_id': requesterId,
+      'title': 'Request $responseText',
+      'body':
+          '$currentUserName has $responseText your request for "$itemName".',
+      'type': 'response',
+      'data': {
+        'request_id': requestId,
+        'item_id': itemId,
+        'accepted': accepted,
+      },
+      'read': false,
+      'created_at': DateTime.now().toIso8601String(),
+    });
+  }
+
+  Stream<List<Map<String, dynamic>>> streamNotifications() {
+    if (_userId == null) {
+      throw Exception('User not logged in');
+    }
+
+    return _client
+        .from('notifications')
+        .stream(primaryKey: ['id'])
+        .eq('user_id', _userId!)
+        .order('created_at', ascending: false)
+        .map((data) => List<Map<String, dynamic>>.from(data));
+  }
+
   Future<Map<String, dynamic>?> getUserById(int userId) async {
     final response =
         await _client
@@ -171,6 +236,67 @@ class SupabaseService {
       await Future.delayed(Duration(seconds: 5)); // Polling every 5 seconds
     }
   }
+
+  Stream<List<Map<String, dynamic>>> streamPendingExchanges() {
+    if (_userId == null) throw Exception('User not logged in');
+
+    return _client
+        .from('requests')
+        .stream(primaryKey: ['id'])
+        .eq('status', 'pending')
+        .map(
+          (requests) =>
+              requests
+                  .where(
+                    (r) =>
+                        r['requester_id'] == _userId ||
+                        r['owner_id'] == _userId,
+                  )
+                  .toList(),
+        );
+  }
+
+  Future<void> confirmExchange(int requestId) async {
+    if (_userId == null) throw Exception('User not logged in');
+
+    final request =
+        await _client
+            .from('requests')
+            .select(
+              'requester_id, owner_id, requester_confirmed, owner_confirmed',
+            )
+            .eq('id', requestId)
+            .maybeSingle();
+
+    if (request == null) throw Exception('Request not found');
+
+    final isRequester = request['requester_id'] == _userId;
+    final updateField = isRequester ? 'requester_confirmed' : 'owner_confirmed';
+
+    await _client
+        .from('requests')
+        .update({updateField: true})
+        .eq('id', requestId);
+
+    final updated =
+        await _client
+            .from('requests')
+            .select('requester_confirmed, owner_confirmed')
+            .eq('id', requestId)
+            .maybeSingle();
+
+    if (updated != null &&
+        updated['requester_confirmed'] == true &&
+        updated['owner_confirmed'] == true) {
+      await _client
+          .from('requests')
+          .update({'status': 'completed'})
+          .eq('id', requestId);
+
+    }
+  }
+
+  
 
   Future<void> addItem(
     String name,
