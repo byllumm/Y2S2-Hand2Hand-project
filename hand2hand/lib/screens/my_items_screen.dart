@@ -94,7 +94,7 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Browse Items')),
+      appBar: AppBar(title: Text('My Items')),
       body: StreamBuilder<List<Map<String, dynamic>>>(
         stream: itemsStream,
         builder: (context, snapshot) {

@@ -114,42 +114,67 @@ class SupabaseService {
     final response =
         await _client
             .from('User')
-            .select('id, name, username, location')
+            .select('id, name, username,email, location')
             .eq('id', userId)
             .maybeSingle();
 
     return response;
   }
 
-  Future<Map<String, dynamic>?> getItemById(int itemId) async {
-  final response = await _client
-      .from('items')
-      .select('id, name')
-      .eq('id', itemId)
-      .maybeSingle();
-  return response;
-}
+  Future<Map<String, dynamic>?> getCurrentUserData() async {
+    if (_userId == null) return null;
 
+    final user = await getUserById(_userId!);
+    return user;
+  }
+
+  Future<void> updateUserProfile({
+    required int userId,
+    required String name,
+    required String username,
+    required String email,
+    required String location,
+  }) async {
+    await _client
+        .from('User')
+        .update({
+          'name': name,
+          'username': username,
+          'email': email,
+          'location': location,
+        })
+        .eq('id', userId);
+  }
+
+  Future<Map<String, dynamic>?> getItemById(int itemId) async {
+    final response =
+        await _client
+            .from('items')
+            .select('id, name')
+            .eq('id', itemId)
+            .maybeSingle();
+    return response;
+  }
 
   Stream<List<Map<String, dynamic>>> streamIncomingRequests() async* {
-  if (_userId == null) {
-    throw Exception('User not logged in');
+    if (_userId == null) {
+      throw Exception('User not logged in');
+    }
+
+    while (true) {
+      final response = await _client
+          .from('requests')
+          .select(
+            'id, created_at, status, item_id, requester_id, owner_id, requester:User(name), item:item_id(name)',
+          )
+          .eq('owner_id', _userId!)
+          .eq('status', 'pending')
+          .order('created_at');
+
+      yield List<Map<String, dynamic>>.from(response);
+      await Future.delayed(Duration(seconds: 5)); // Polling every 5 seconds
+    }
   }
-
-  while (true) {
-    final response = await _client
-        .from('requests')
-        .select('id, created_at, status, item_id, requester_id, owner_id, requester:User(name), item:item_id(name)')
-        .eq('owner_id', _userId!)
-        .eq('status', 'pending')
-        .order('created_at');
-
-    yield List<Map<String, dynamic>>.from(response);
-    await Future.delayed(Duration(seconds: 5)); // Polling every 5 seconds
-  }
-}
-
-
 
   Future<void> addItem(
     String name,
@@ -279,41 +304,50 @@ class SupabaseService {
         .eq('item_id', itemId)
         .eq('receiver_id', receiverId)
         .order('created_at', ascending: true);
-    return (response as List).map((e) => Message.fromMap(e as Map<String, dynamic>)).toList();
+    return (response as List)
+        .map((e) => Message.fromMap(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<void> sendMessage(Message message) async {
     final response = await _client.from('messages').insert(message.toMap());
 
-    if(response == null || response.isEmpty) {
+    if (response == null || response.isEmpty) {
       throw Exception('Failed to insert message or response was empty.');
     }
   }
 
-  void subscribeToMessages({required int itemId, required Function(Message) onNewMessage, }) {
-    if(_userId == null) return;
+  void subscribeToMessages({
+    required int itemId,
+    required Function(Message) onNewMessage,
+  }) {
+    if (_userId == null) return;
 
     _messageChannel = _client.channel('messages_channel');
-    
-    _messageChannel!.onPostgresChanges(
-      event: PostgresChangeEvent.insert,
-      schema: 'public',
-      table: 'messages',
-      callback: (payload) {
-        final data = payload.newRecord;
-        if(data == null) return;
 
-        final message = Message.fromMap(data);
+    _messageChannel!
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'messages',
+          callback: (payload) {
+            final data = payload.newRecord;
+            if (data == null) return;
 
-        if(message.itemId == itemId && (message.senderId == _userId || message.receiverId == _userId)) {
-          onNewMessage(message);
-        }
-      },
-    ).subscribe();
+            final message = Message.fromMap(data);
+
+            if (message.itemId == itemId &&
+                (message.senderId == _userId ||
+                    message.receiverId == _userId)) {
+              onNewMessage(message);
+            }
+          },
+        )
+        .subscribe();
   }
 
   void unsubscribeFromMessages() {
-    if(_messageChannel != null) {
+    if (_messageChannel != null) {
       _client.removeChannel(_messageChannel!);
       _messageChannel = null;
     }
