@@ -5,20 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac3c1388-5f75-4154-bb54-655348250fd2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/add_item_dialog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/add_item_dialog.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/city_map.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/city_map.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/food_item.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/food_item.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/message.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/message.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/screens/add_item_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/screens/add_item_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/screens/chatscreen_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/screens/chatscreen_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/screens/explorer_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/screens/explorer_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/screens/itemDetail_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/screens/itemDetail_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/screens/my_items_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/screens/my_items_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/screens/notifications_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/screens/notifications_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/screens/pending_exchanges_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/screens/pending_exchanges_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/screens/profile_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/screens/profile_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hand2hand/lib/screens/trade_point.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/screens/trade_point.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hand2hand/lib/navigation_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/navigation_helper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hand2hand/lib/supabase_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/hand2hand/lib/supabase_service.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,11 +17,16 @@
     <option name="formatViaClangd" value="false" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="messagingSystem" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2x2MAr1ZA8PLV4i9lOWbm1ZZz5x" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -49,7 +42,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "messagingSystemMerge",
     "kotlin-language-version-configured": "true",
     "show.migrate.to.gradle.popup": "false"
   }
@@ -64,16 +57,5 @@
       <updated>1747131575510</updated>
     </task>
     <servers />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/hand2hand/lib/screens/trade_point.dart</url>
-          <line>19</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
