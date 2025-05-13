@@ -48,6 +48,7 @@ class TradePoint extends StatelessWidget {
             subdomains: ['a', 'b', 'c'],
           ),
 
+          /*
           Stack(
             children: [
               item['image'] != null
@@ -77,7 +78,7 @@ class TradePoint extends StatelessWidget {
               ),
             ],
           ),
-
+          */
           CircleLayer(
             circles: [
               CircleMarker(
