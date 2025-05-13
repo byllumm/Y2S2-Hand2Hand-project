@@ -19,6 +19,8 @@ class TradePoint extends StatelessWidget {
     // Create LatLng object from latitude and longitude
     final LatLng center = LatLng(latitude, longitude);
 
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -45,6 +47,37 @@ class TradePoint extends StatelessWidget {
             urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             subdomains: ['a', 'b', 'c'],
           ),
+
+          Stack(
+            children: [
+              item['image'] != null
+                  ? Image.network(
+                    item['image'],
+                    height: screenHeight * 0.25,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  )
+                  : Container(height: screenHeight * 0.25, color: Colors.grey),
+              Positioned(
+                bottom: 16,
+                left: 16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item['name'] ?? "Item",
+                      style: GoogleFonts.outfit(
+                        fontSize: 28,
+                        color: Color.fromARGB(255, 66, 66, 66),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
           CircleLayer(
             circles: [
               CircleMarker(
@@ -61,11 +94,11 @@ class TradePoint extends StatelessWidget {
           MarkerLayer(
             markers: [
               Marker(
-                point: center, // Center of the map
-                width: 50, // Adjust width as needed
-                height: 50, // Adjust height as needed
+                point: center,
+                width: 50,
+                height: 50,
                 child: Icon(
-                  Icons.location_on, // Use a location pin icon
+                  Icons.location_on,
                   color: Color.fromARGB(255, 222, 79, 79), // Red color
                   size: 40, // Adjust size as needed
                 ),
