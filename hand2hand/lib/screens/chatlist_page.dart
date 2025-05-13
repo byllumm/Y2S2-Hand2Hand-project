@@ -62,21 +62,21 @@ class _ChatListPageState extends State<ChatListPage> {
       ),
 
       body: _isLoading
-        ? Center(child: CircularProgressIndicator())
-        : ListView.builder(
-            itemCount: _chats.length,
-            itemBuilder: (context, index) {
-              final chat = _chats[index];
-              return ListTile(
-                title: Text(chat.username),
-                subtitle: Text(chat.lastMessage),
-                trailing: Text("${chat.lastMessageTime.hour}:${chat.lastMessageTime.minute}"),
-                onTap: () {
-                  navigateWithTransition(context, ChatScreen(itemId: chat.chatId, receiverId: chat.userId,),
-                  );
-                },
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+        itemCount: _chats.length,
+        itemBuilder: (context, index) {
+          final chat = _chats[index];
+          return ListTile(
+            title: Text(chat.username),
+            subtitle: Text(chat.lastMessage),
+            trailing: Text("${chat.lastMessageTime.hour}:${chat.lastMessageTime.minute}"),
+            onTap: () {
+              navigateWithTransition(context, ChatScreen(itemId: chat.chatId, receiverId: chat.userId,),
               );
             },
+          );
+        },
       ),
     );
   }

@@ -11,7 +11,7 @@ class ChatScreen extends StatefulWidget {
   final int receiverId;
 
   const ChatScreen({Key? key, required this.itemId, required this.receiverId})
-    : super(key: key);
+      : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -32,15 +32,15 @@ class _ChatScreenState extends State<ChatScreen> {
     _loadReceiverUsername();
 
     SupabaseService().subscribeToMessages (itemId: widget.itemId, onNewMessage: (Message newMessage) async {
-        if (!_usernamesCache.containsKey(newMessage.senderId)) {
-          final user = await SupabaseService().getUserById(newMessage.senderId);
-          _usernamesCache[newMessage.senderId] = user?['username'] ?? 'Unknown';
-        }
+      if (!_usernamesCache.containsKey(newMessage.senderId)) {
+        final user = await SupabaseService().getUserById(newMessage.senderId);
+        _usernamesCache[newMessage.senderId] = user?['username'] ?? 'Unknown';
+      }
 
-        setState(() {
-          _messages.add(newMessage);
-        });
-      },
+      setState(() {
+        _messages.add(newMessage);
+      });
+    },
     );
   }
 
@@ -80,7 +80,7 @@ class _ChatScreenState extends State<ChatScreen> {
     try {
       setState(() => _isLoading = true);
       final messages = await SupabaseService().getMessages(widget.itemId, widget.receiverId);
-      
+
       for(var message in messages) {
         if(!_usernamesCache.containsKey(message.senderId)){
           final user = await SupabaseService().getUserById(message.senderId);
@@ -94,7 +94,7 @@ class _ChatScreenState extends State<ChatScreen> {
           }
         }
       }
-      
+
       setState(() {
         _messages.addAll(messages);
       });
@@ -171,13 +171,13 @@ class _ChatScreenState extends State<ChatScreen> {
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
-                    reverse: false,
-                    itemCount: _messages.length,
-                    itemBuilder: (context, index) {
-                      final message = _messages[index];
-                      return _buildMessageBubble(message);
-                    },
-                  ),
+                reverse: false,
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  final message = _messages[index];
+                  return _buildMessageBubble(message);
+                },
+              ),
             ),
 
             Padding(
@@ -188,23 +188,23 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: TextField(
                       controller: _controller,
                       decoration: InputDecoration(
-                        hintText: 'Type a message...',
-                        hintStyle: TextStyle(color: Colors.grey[500]),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(color: Color.fromARGB(223, 255, 213, 63), width: 2),
-                        )
+                          hintText: 'Type a message...',
+                          hintStyle: TextStyle(color: Colors.grey[500]),
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(color: Color.fromARGB(223, 255, 213, 63), width: 2),
+                          )
                       ),
                     ),
                   ),
