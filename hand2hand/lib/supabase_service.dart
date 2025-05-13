@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
 import 'package:hand2hand/message.dart';
+import 'package:hand2hand/chatpreview.dart';
 
 class SupabaseService {
   // Singleton implementation
