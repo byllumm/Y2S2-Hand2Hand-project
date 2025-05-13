@@ -10,7 +10,21 @@ class ExploreItems extends StatefulWidget {
 }
 
 class _ExploreItemsState extends State<ExploreItems> {
+  final TextEditingController _searchController = TextEditingController();
   String? selectedCategory;
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.text = _searchQuery;
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +53,17 @@ class _ExploreItemsState extends State<ExploreItems> {
         final filteredItems =
             items.where((item) {
               final category = item['category'] ?? '';
+              final name = (item['name'] ?? '').toString().toLowerCase();
               final matchesCategory =
                   selectedCategory == null || selectedCategory == category;
-              return matchesCategory;
+              final matchesSearch =
+                  _searchQuery.isEmpty ||
+                  name.contains(_searchQuery.toLowerCase());
+              return matchesCategory && matchesSearch;
             }).toList();
 
         return Column(
           children: [
-            // Filter button row
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -54,6 +71,12 @@ class _ExploreItemsState extends State<ExploreItems> {
                 children: [
                   Expanded(
                     child: TextField(
+                      controller: _searchController,
+                      onSubmitted: (_) {
+                        setState(() {
+                          _searchQuery = _searchController.text;
+                        });
+                      },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -65,9 +88,23 @@ class _ExploreItemsState extends State<ExploreItems> {
                           fontWeight: FontWeight.bold,
                           color: Colors.grey,
                         ),
+                        suffixIcon:
+                            _searchController.text.isNotEmpty
+                                ? IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: () {
+                                    setState(() {
+                                      _searchController.clear();
+                                      _searchQuery = '';
+                                    });
+                                  },
+                                )
+                                : null,
                       ),
                     ),
                   ),
+
+                  // Filter button
                   IconButton(
                     icon: const Icon(Icons.filter_alt_outlined),
                     iconSize: 35,
@@ -102,6 +139,9 @@ class _ExploreItemsState extends State<ExploreItems> {
                               ].map(
                                 (category) => ListTile(
                                   title: Text(category),
+                                  selected: selectedCategory == category,
+                                  selectedTileColor: Colors.grey.withOpacity(0.8),
+                                  selectedColor: Colors.white,
                                   onTap: () {
                                     setState(() {
                                       selectedCategory = category;
@@ -120,11 +160,11 @@ class _ExploreItemsState extends State<ExploreItems> {
               ),
             ),
             // If no items match the selected category, show a message
-            if (filteredItems.isEmpty && selectedCategory != null)
+            if (filteredItems.isEmpty)
               const Expanded(
                 child: Center(
                   child: Text(
-                    'No items found for the selected category',
+                    'No items found!',
                     style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                 ),
