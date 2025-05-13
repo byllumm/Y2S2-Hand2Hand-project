@@ -178,6 +178,7 @@ And multiple users request it at the same time <br/>
 Then I should receive a separate notification for each request <br/>
 
 **8.**
+
 As a user I want to be able to see the listed items in my neighbourhood. (Must have this feature) <br/>
 
 Scenario: Seeing the listed items in my neighborhood <br/>
@@ -191,6 +192,7 @@ When opening or refreshing the "Browse Items" page <br/>
 Then a message appears saying "No items available nearby"<br/>
 
 **9.**
+
 As a user I want to be able to filter the items by category. (Should have this feature) <br/>
 
 Scenario: Using filters by a specific category <br/>
@@ -231,31 +233,13 @@ In this section you should start by briefly describing the components of the pro
 ### Logical architecture
 
 <p align="center" justify="center">
- <img src="https://github.com/user-attachments/assets/17e405ff-76d1-455c-9150-eb3e40671af4"/>
+ <img src = "https://github.com/user-attachments/assets/e842c2fd-ba6a-453c-b7b8-5a8cd2825e8f"/>
 </p>
 
+
 ### Physical architecture
-**User Client Machine**
-- **Mobile App:** Runs on user devices (Android) and provides the graphical user interface (GUI) for interacting with the platform.
-    - API Gateway: Acts as an entry point for all client requests, forwarding them to appropriate backend services.
-
-**Backend Server Machine**
-- **Notification Server:** Responsible for sending real-time push notifications to users about item requests, trades, and other users' messages.
-- **Application Logic Services:**
-    - Users Management Service: Handles user registration, authentication, and profile.
-    - Neighborhoods Management Service: Manages filtering of items based on neighborhood.
-    - Items Management Service: Controls items’ creations, updates, deletions, and availability status.
-    - Request Management Service: Manages item donation requests, interactions of users involved in request, and request status.
-    - Trade Management Service: Manages trade offers, negotiations, and trade status.
-
-**Database Machine**
-- **Database Management System:**
-    - Users Data: Stores user profiles and login credentials.
-    - Neighborhoods Data: Maintains information about all the available neighborhoods.
-    - Items Data: Keeps track of items listings, their description, availability, and category.
-<br/>
 <p align="center" justify="center">
- <img src="https://github.com/LEIC-ES-2024-25/2LEIC01T5/blob/master/models/physicalview.png"/>
+ <img src="https://github.com/LEIC-ES-2024-25/2LEIC01T5/blob/master/models/physical-view.png"/>
 </p>
 
 <!--
@@ -305,7 +289,29 @@ You can find below information and references related with the project managemen
 
 ### Sprint 1
 
+<p align="center" justify="center">
+  <img alt="Sprint_1" src="https://github.com/user-attachments/assets/4f2a9ac5-369b-418d-a170-ee218b9d2a79"/>
+</p>
+
+<p align="center" justify="center">
+  <img alt="Sprint_1_end" src="https://github.com/user-attachments/assets/4030d008-162a-4a2a-ba19-6a4cb6d799cd" />
+</p>
+
+
+During the first sprint, one of our biggest successes was completing all the user stories we had committed to. This demonstrated strong team coordination and commitment to our initial planning.
+
+Along the way, we learned that implementing features without a defined budget presents significant challenges, especially when considering third-party services or tools that might require payment.
+
+We also realized the importance of improving our testing practices. Some of the tests we planned weren’t completed in time, which means our current code coverage isn’t where it needs to be yet. Strengthening this aspect will be a priority moving forward.
+
+Additionally, we discovered that integrating map and location-based features is more complex than expected. It involves technical hurdles that we’ll need to better prepare for in the upcoming sprints.
+
 ### Sprint 2
+
+<p align="center" justify="center">
+  <img alt="Sprint_2" src="https://github.com/user-attachments/assets/efa99166-b1e9-4775-b1a9-4a9de1fd8a00" />
+</p>
+
 
 ### Sprint 3
 

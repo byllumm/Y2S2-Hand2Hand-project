@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:hand2hand/supabase_service.dart';
+import 'package:latlong2/latlong.dart';
 
 class AddItemPage extends StatefulWidget {
   const AddItemPage({super.key});
@@ -25,6 +26,7 @@ class _AddItemPageState extends State<AddItemPage> {
   String? _donateOrTrade; // Stores dropdown selection for donation trade
   File? _selectedImage;
   final TextEditingController _quantityController = TextEditingController();
+  LatLng? _selectedTradePointCoordinates; // Add this to store coordinates
 
   @override
   void dispose() async {
@@ -54,7 +56,8 @@ class _AddItemPageState extends State<AddItemPage> {
 
     if (selectedLocation != null && mounted) {
       setState(() {
-        _selectedTradePoint = selectedLocation;
+        _selectedTradePoint = selectedLocation['address'];
+        _selectedTradePointCoordinates = selectedLocation['coordinates'];
       });
     }
   }
@@ -176,8 +179,8 @@ class _AddItemPageState extends State<AddItemPage> {
         quantity, // Quantity
         _selectedDate!, // Expiration Date
         _donateOrTrade == 'Trade' ? 1 : 0, // Action: 1 for Trade, 0 for Offer
-        37.7749, // Replace with actual latitude
-        -122.4194, // Replace with actual longitude
+        _selectedTradePointCoordinates?.latitude ?? 0.0, // Latitude
+        _selectedTradePointCoordinates?.longitude ?? 0.0, // Longitude
         _moreInfoController.text, // Description
         _selectedImage!, // Image File
       );

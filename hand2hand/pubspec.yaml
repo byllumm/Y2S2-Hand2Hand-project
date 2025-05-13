@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   #Database
   supabase_flutter: ^2.8.4
+  timeago: ^3.2.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

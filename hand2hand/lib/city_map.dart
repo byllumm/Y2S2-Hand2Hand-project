@@ -126,12 +126,15 @@ class _MapScreenState extends State<MapScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(200, 222, 79, 79),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)
-                  )
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: () {
                   if (_selectedLocation != null && _locationName != null) {
-                    Navigator.pop(context, _locationName);
+                    Navigator.pop(context, {
+                      'address': _locationName,
+                      'coordinates': _selectedLocation,
+                    });
                   }
                 },
                 child: Text(
