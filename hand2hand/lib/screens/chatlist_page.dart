@@ -8,9 +8,16 @@ import 'package:hand2hand/supabase_service.dart';
 import 'chatscreen_page.dart';
 
 class ChatListPage extends StatefulWidget {
+  final SupabaseService service;
+
+  ChatListPage({Key? key, SupabaseService? service})
+      : service = service ?? SupabaseService(),
+        super(key: key);
+
   @override
   _ChatListPageState createState() => _ChatListPageState();
 }
+
 
 class _ChatListPageState extends State<ChatListPage> {
   List<ChatPreview> _chats = [];
@@ -24,14 +31,19 @@ class _ChatListPageState extends State<ChatListPage> {
 
   Future<void> _loadChats() async {
     try {
-      final currentUserId = await SupabaseService().currentUserId!;
-      final chats = await SupabaseService().getUserChats(currentUserId);
+      final currentUserId = widget.service.currentUserId;
+
+      if (currentUserId == null) {
+        throw Exception('User not logged in');
+      }
+
+      final chats = await widget.service.getUserChats(currentUserId);
+
       setState(() {
         _chats = chats;
         _isLoading = false;
       });
-    }
-    catch (e) {
+    } catch (e) {
       print("Error loading chats: $e");
       setState(() {
         _isLoading = false;
@@ -70,7 +82,9 @@ class _ChatListPageState extends State<ChatListPage> {
           return ListTile(
             title: Text(chat.username),
             subtitle: Text(chat.lastMessage),
-            trailing: Text("${chat.lastMessageTime.hour}:${chat.lastMessageTime.minute}"),
+            trailing: Text(
+              "${chat.lastMessageTime.hour}:${chat.lastMessageTime.minute.toString().padLeft(2, '0')}",
+            ),
             onTap: () {
               navigateWithTransition(context, ChatScreen(itemId: chat.chatId, receiverId: chat.userId,),
               );
