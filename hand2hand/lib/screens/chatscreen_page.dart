@@ -6,12 +6,19 @@ import 'package:hand2hand/screens/chatlist_page.dart';
 import 'package:hand2hand/supabase_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+
 class ChatScreen extends StatefulWidget {
+  final SupabaseService supabaseService;
   final int itemId;
   final int receiverId;
 
-  const ChatScreen({Key? key, required this.itemId, required this.receiverId})
-      : super(key: key);
+  ChatScreen({
+    Key? key,
+    required this.itemId,
+    required this.receiverId,
+    SupabaseService? supabaseService, // nullable param
+  })  : supabaseService = supabaseService ?? SupabaseService(),
+        super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -31,9 +38,9 @@ class _ChatScreenState extends State<ChatScreen> {
     _loadMessages();
     _loadReceiverUsername();
 
-    SupabaseService().subscribeToMessages (itemId: widget.itemId, onNewMessage: (Message newMessage) async {
+    widget.supabaseService.subscribeToMessages (itemId: widget.itemId, onNewMessage: (Message newMessage) async {
       if (!_usernamesCache.containsKey(newMessage.senderId)) {
-        final user = await SupabaseService().getUserById(newMessage.senderId);
+        final user = await widget.supabaseService.getUserById(newMessage.senderId);
         _usernamesCache[newMessage.senderId] = user?['username'] ?? 'Unknown';
       }
 
@@ -46,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    SupabaseService().unsubscribeFromMessages();
+    widget.supabaseService.unsubscribeFromMessages();
     super.dispose();
   }
 
@@ -54,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if(_controller.text.isEmpty) return;
 
     try {
-      final currentUserId = SupabaseService().currentUserId!;
+      final currentUserId = widget.supabaseService.currentUserId!;
       final message = Message(
         senderId: currentUserId,
         receiverId: widget.receiverId,
@@ -63,7 +70,7 @@ class _ChatScreenState extends State<ChatScreen> {
         createdAt: DateTime.now(),
       );
 
-      await SupabaseService().sendMessage(message);
+      await widget.supabaseService.sendMessage(message);
 
       setState(() {
         _messages.add(message);
@@ -79,11 +86,11 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _loadMessages() async {
     try {
       setState(() => _isLoading = true);
-      final messages = await SupabaseService().getMessages(widget.itemId, widget.receiverId);
+      final messages = await widget.supabaseService.getMessages(widget.itemId, widget.receiverId);
 
       for(var message in messages) {
         if(!_usernamesCache.containsKey(message.senderId)){
-          final user = await SupabaseService().getUserById(message.senderId);
+          final user = await widget.supabaseService.getUserById(message.senderId);
 
           if(user != null) {
             _usernamesCache[message.senderId] = user['username'];
@@ -110,14 +117,14 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _loadReceiverUsername() async {
-    final user = await SupabaseService().getUserById(widget.receiverId);
+    final user = await widget.supabaseService.getUserById(widget.receiverId);
     setState(() {
       _receiverUsername = user?['username'] ?? 'unknown';
     });
   }
 
   Widget _buildMessageBubble(Message message) {
-    final isMe = message.senderId == SupabaseService().currentUserId;
+    final isMe = message.senderId == widget.supabaseService.currentUserId;
     final alignment = isMe ? Alignment.centerRight : Alignment.centerLeft;
     final bubbleColor = isMe ? Color.fromARGB(223, 255, 233, 153): Colors.grey[300];
 

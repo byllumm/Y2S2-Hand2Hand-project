@@ -92,7 +92,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MyItemsScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => MyItemsScreen(service: SupabaseService()),
+                    ),
                   );
                 },
               ),

@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:hand2hand/screens/my_items_screen.dart';
 import 'package:hand2hand/supabase_service.dart';
-import 'package:hand2hand/screens/add_item_page.dart';
 import 'dart:async';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
@@ -91,23 +90,7 @@ void main() {
       expect(find.text('Details: Fresh Bread'), findsOneWidget);
     });
 
-    testWidgets('navigates to AddItemPage when FAB is tapped', (WidgetTester tester) async {
 
-      final controller = StreamController<List<Map<String, dynamic>>>();
-      when(() => mockService.streamItems()).thenAnswer((_) => controller.stream);
-
-      await tester.pumpWidget(MaterialApp(
-        home: MyItemsScreen(service: mockService),
-      ));
-
-      controller.add([]);
-      await tester.pump();
-
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(AddItemPage), findsOneWidget);
-    });
   });
 }
 

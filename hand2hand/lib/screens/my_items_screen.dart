@@ -5,27 +5,29 @@ import 'package:hand2hand/screens/add_item_page.dart';
 import 'dart:io';
 
 class MyItemsScreen extends StatefulWidget {
-  const MyItemsScreen({super.key});
+  final SupabaseService service;
+
+  const MyItemsScreen({super.key, required this.service});
 
   @override
   _MyItemsScreenState createState() => _MyItemsScreenState();
 }
 
+
 class _MyItemsScreenState extends State<MyItemsScreen> {
-  final SupabaseService _supabaseService = SupabaseService();
   late Stream<List<Map<String, dynamic>>> itemsStream;
 
   @override
   void initState() {
     super.initState();
-    itemsStream = _supabaseService.streamItems();
+    itemsStream = widget.service.streamItems();
   }
 
   Future<void> _addItem(
     String name,
     int quantity,
     DateTime expirationDate,
-    int action, // 0 for offer, 1 for trade
+    int action,
     double latitude,
     double longitude,
     String description,
@@ -33,7 +35,7 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
     String? category,
   ) async {
     try {
-      await _supabaseService.addItem(
+      await widget.service.addItem(
         name, // Name
         quantity, // Quantity
         expirationDate, // Expiration Date
@@ -79,9 +81,9 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
 
     if (shouldDelete) {
       try {
-        await _supabaseService.deleteItem(id);
+        await widget.service.deleteItem(id);
         setState(() {
-          itemsStream = _supabaseService.streamItems();
+          itemsStream = widget.service.streamItems();
         });
       } catch (e) {
         print('Error deleting item: $e');

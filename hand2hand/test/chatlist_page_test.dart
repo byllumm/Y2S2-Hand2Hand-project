@@ -5,7 +5,6 @@ import 'package:hand2hand/screens/chatlist_page.dart';
 import 'package:hand2hand/supabase_service.dart';
 import 'package:hand2hand/chatpreview.dart';
 import 'dart:async';
-import 'package:hand2hand/screens/navController.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
 
@@ -90,6 +89,36 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('14:05'), findsOneWidget);
+  });
+
+  testWidgets('handles null currentUserId gracefully', (tester) async {
+    when(() => mockService.currentUserId).thenReturn(null);
+
+    await tester.pumpWidget(MaterialApp(home: ChatListPage(service: mockService)));
+
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byType(ListTile), findsNothing);
+  });
+
+  testWidgets('displays multiple chat previews correctly', (tester) async {
+    final chats = [
+      ChatPreview(chatId: 1, userId: 101, username: 'Alice', lastMessage: 'Hi', lastMessageTime: DateTime(2025, 5, 15, 9, 0)),
+      ChatPreview(chatId: 2, userId: 102, username: 'Bob', lastMessage: 'Yo', lastMessageTime: DateTime(2025, 5, 15, 10, 0)),
+    ];
+
+    when(() => mockService.currentUserId).thenReturn(123);
+    when(() => mockService.getUserChats(123)).thenAnswer((_) async => chats);
+
+    await tester.pumpWidget(MaterialApp(home: ChatListPage(service: mockService)));
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('Alice'), findsOneWidget);
+    expect(find.text('Bob'), findsOneWidget);
+    expect(find.text('Hi'), findsOneWidget);
+    expect(find.text('Yo'), findsOneWidget);
   });
 
 }
