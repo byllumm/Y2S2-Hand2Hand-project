@@ -7,7 +7,7 @@ class SupabaseService {
   // Singleton implementation
   SupabaseService._privateConstructor();
   static final SupabaseService _instance =
-  SupabaseService._privateConstructor();
+      SupabaseService._privateConstructor();
   factory SupabaseService() => _instance;
 
   final _client = Supabase.instance.client;
@@ -26,14 +26,14 @@ class SupabaseService {
         .stream(primaryKey: ['id'])
         .map(
           (items) =>
-          items
-              .where(
-                (item) =>
-            item['user_id'] == _userId &&
-                item['is_deleted'] == false,
-          )
-              .toList(),
-    );
+              items
+                  .where(
+                    (item) =>
+                        item['user_id'] == _userId &&
+                        item['is_deleted'] == false,
+                  )
+                  .toList(),
+        );
   }
 
   Stream<List<Map<String, dynamic>>> streamOtherUsersItems() {
@@ -48,17 +48,17 @@ class SupabaseService {
         .eq('is_deleted', false);
 
     return query.asStream().map(
-          (data) => List<Map<String, dynamic>>.from(data),
+      (data) => List<Map<String, dynamic>>.from(data),
     );
   }
 
   Future<Map<String, dynamic>> getItemStatus(int itemId) async {
     final response =
-    await _client
-        .from('items')
-        .select('is_requested, is_deleted, user_id')
-        .eq('id', itemId)
-        .maybeSingle();
+        await _client
+            .from('items')
+            .select('is_requested, is_deleted, user_id')
+            .eq('id', itemId)
+            .maybeSingle();
 
     if (response != null) {
       return {
@@ -84,12 +84,12 @@ class SupabaseService {
 
       // Check if the user already requested this item
       final existing =
-      await _client
-          .from('requests')
-          .select()
-          .eq('item_id', itemId)
-          .eq('requester_id', _userId!)
-          .maybeSingle();
+          await _client
+              .from('requests')
+              .select()
+              .eq('item_id', itemId)
+              .eq('requester_id', _userId!)
+              .maybeSingle();
 
       if (existing != null) {
         print('User already requested this item.');
@@ -127,11 +127,11 @@ class SupabaseService {
 
     // 2. Fetch request details
     final request =
-    await _client
-        .from('requests')
-        .select('requester_id, item_id')
-        .eq('id', requestId)
-        .maybeSingle();
+        await _client
+            .from('requests')
+            .select('requester_id, item_id')
+            .eq('id', requestId)
+            .maybeSingle();
 
     if (request == null) return;
 
@@ -151,7 +151,7 @@ class SupabaseService {
       'recipient_id': requesterId,
       'title': 'Request $responseText',
       'body':
-      '$currentUserName has $responseText your request for "$itemName".',
+          '$currentUserName has $responseText your request for "$itemName".',
       'type': 'response',
       'data': {
         'request_id': requestId,
@@ -178,11 +178,11 @@ class SupabaseService {
 
   Future<Map<String, dynamic>?> getUserById(int userId) async {
     final response =
-    await _client
-        .from('User')
-        .select('id, name, username,email, location')
-        .eq('id', userId)
-        .maybeSingle();
+        await _client
+            .from('User')
+            .select('id, name, username,email, location')
+            .eq('id', userId)
+            .maybeSingle();
 
     return response;
   }
@@ -204,21 +204,21 @@ class SupabaseService {
     await _client
         .from('User')
         .update({
-      'name': name,
-      'username': username,
-      'email': email,
-      'location': location,
-    })
+          'name': name,
+          'username': username,
+          'email': email,
+          'location': location,
+        })
         .eq('id', userId);
   }
 
   Future<Map<String, dynamic>?> getItemById(int itemId) async {
     final response =
-    await _client
-        .from('items')
-        .select('id, name')
-        .eq('id', itemId)
-        .maybeSingle();
+        await _client
+            .from('items')
+            .select('id, name')
+            .eq('id', itemId)
+            .maybeSingle();
     return response;
   }
 
@@ -231,89 +231,87 @@ class SupabaseService {
       final response = await _client
           .from('requests')
           .select(
-        'id, created_at, status, item_id, requester_id, owner_id, requester:User(name), item:item_id(name)',
-      )
+            'id, created_at, status, item_id, requester_id, owner_id, requester:User(name), item:item_id(name)',
+          )
           .eq('owner_id', _userId!)
           .eq('status', 'pending')
           .order('created_at');
 
       yield List<Map<String, dynamic>>.from(response);
-      await Future.delayed(Duration(seconds: 5)); // Polling every 5 seconds
+      await Future.delayed(Duration(seconds: 2));
     }
   }
 
-  Stream<List<Map<String, dynamic>>> streamPendingExchanges() {
+  Stream<List<Map<String, dynamic>>> streamPendingExchanges() async* {
     if (_userId == null) throw Exception('User not logged in');
 
-    return _client
-        .from('requests')
-        .stream(primaryKey: ['id'])
-        .eq('status', 'pending')
-        .map(
-          (requests) =>
-          requests
-              .where(
-                (r) =>
-            r['requester_id'] == _userId ||
-                r['owner_id'] == _userId,
-          )
-              .toList(),
-    );
+    while (true) {
+      try {
+        final response = await _client
+            .from('requests')
+            .select(
+              'id, created_at, status, item_id, requester_id, owner_id, requester_confirmed, donor_confirmed',
+            )
+            .eq('status', 'pending')
+            .or('requester_id.eq.$_userId,owner_id.eq.$_userId');
+
+        final List<Map<String, dynamic>> enhancedRequests = [];
+
+        for (final request in response) {
+          final itemData = await getItemById(request['item_id']);
+
+          final requesterData = await getUserById(request['requester_id']);
+
+          final ownerData = await getUserById(request['owner_id']);
+
+          final enhancedRequest = Map<String, dynamic>.from(request);
+          enhancedRequest['item'] = itemData;
+          enhancedRequest['requester'] = requesterData;
+          enhancedRequest['owner'] = ownerData;
+
+          enhancedRequests.add(enhancedRequest);
+        }
+
+        yield enhancedRequests;
+        await Future.delayed(const Duration(seconds: 2));
+      } catch (e) {
+        print('Error in streamPendingExchanges: $e');
+        await Future.delayed(const Duration(seconds: 5));
+      }
+    }
   }
 
   Future<void> confirmExchange(int requestId) async {
-    if (_userId == null) throw Exception('User not logged in');
+    final requestResponse =
+        await _client.from('requests').select().eq('id', requestId).single();
 
-    final request =
-    await _client
-        .from('requests')
-        .select(
-      'requester_id, owner_id, requester_confirmed, owner_confirmed',
-    )
-        .eq('id', requestId)
-        .maybeSingle();
-
-    if (request == null) throw Exception('Request not found');
-
+    final request = requestResponse;
     final isRequester = request['requester_id'] == _userId;
-    final updateField = isRequester ? 'requester_confirmed' : 'owner_confirmed';
+    final updateField = isRequester ? 'requester_confirmed' : 'donor_confirmed';
 
-    await _client
+    final response = await _client
         .from('requests')
         .update({updateField: true})
         .eq('id', requestId);
 
-    final updated =
-    await _client
-        .from('requests')
-        .select('requester_confirmed, owner_confirmed')
-        .eq('id', requestId)
-        .maybeSingle();
-
-    if (updated != null &&
-        updated['requester_confirmed'] == true &&
-        updated['owner_confirmed'] == true) {
-      await _client
-          .from('requests')
-          .update({'status': 'completed'})
-          .eq('id', requestId);
-
+    if (response != null) {
+      print('Exchange confirmed successfully.');
+    } else {
+      print('Error confirming exchange.');
     }
   }
 
-
-
   Future<void> addItem(
-      String name,
-      int quantity,
-      DateTime expDate,
-      int action, // 0 for offer, 1 for trade
-      double latitude, // Updated to accept latitude
-      double longitude, // Updated to accept longitude
-      String description,
-      File imageFile,
-      String? category,
-      ) async {
+    String name,
+    int quantity,
+    DateTime expDate,
+    int action, // 0 for offer, 1 for trade
+    double latitude, // Updated to accept latitude
+    double longitude, // Updated to accept longitude
+    String description,
+    File imageFile,
+    String? category,
+  ) async {
     if (_loggedInUsername == null || _userId == null) {
       throw Exception('User is not logged in');
     }
@@ -338,18 +336,18 @@ class SupabaseService {
     try {
       // Insert the item into the database
       final response =
-      await _client.from('items').insert({
-        'name': name,
-        'quantity': quantity,
-        'expirationDate': expDate.toIso8601String(),
-        'action': action, // 0 for offer, 1 for trade
-        'latitude': latitude, // Save latitude
-        'longitude': longitude, // Save longitude
-        'description': description,
-        'image': imageUrl, // Save the image URL
-        'user_id': _userId, // Add the user ID
-        'category': category, // Default category
-      }).select();
+          await _client.from('items').insert({
+            'name': name,
+            'quantity': quantity,
+            'expirationDate': expDate.toIso8601String(),
+            'action': action, // 0 for offer, 1 for trade
+            'latitude': latitude, // Save latitude
+            'longitude': longitude, // Save longitude
+            'description': description,
+            'image': imageUrl, // Save the image URL
+            'user_id': _userId, // Add the user ID
+            'category': category, // Default category
+          }).select();
 
       print('Insert Response: $response'); // Log the response for debugging
 
@@ -367,11 +365,11 @@ class SupabaseService {
   // Delete an item from the Supabase database
   Future<void> deleteItem(int id) async {
     final response =
-    await _client
-        .from('items')
-        .update({'is_deleted': true})
-        .eq('id', id)
-        .select();
+        await _client
+            .from('items')
+            .update({'is_deleted': true})
+            .eq('id', id)
+            .select();
 
     if (response.isEmpty) {
       throw Exception('Error deleting item');
@@ -381,12 +379,12 @@ class SupabaseService {
   // Sign in a user
   Future<bool> signIn(String username, String password) async {
     final response =
-    await _client
-        .from('User')
-        .select('id')
-        .eq('username', username)
-        .eq('password', password)
-        .maybeSingle();
+        await _client
+            .from('User')
+            .select('id')
+            .eq('username', username)
+            .eq('password', password)
+            .maybeSingle();
 
     if (response != null && response['id'] != null) {
       _loggedInUsername = username;
@@ -403,12 +401,12 @@ class SupabaseService {
 
   // Sign up a new user
   Future<void> signUp(
-      String name,
-      String username,
-      String email,
-      String password,
-      String location,
-      ) async {
+    String name,
+    String username,
+    String email,
+    String password,
+    String location,
+  ) async {
     final response = await _client.from('User').insert({
       'username': username,
       'name': name,
@@ -430,8 +428,9 @@ class SupabaseService {
         .select()
         .eq('item_id', itemId)
         .or(
-        'and(sender_id.eq.$_userId,receiver_id.eq.$receiverId),' +
-            'and(sender_id.eq.$receiverId,receiver_id.eq.$_userId)')
+          'and(sender_id.eq.$_userId,receiver_id.eq.$receiverId),' +
+              'and(sender_id.eq.$receiverId,receiver_id.eq.$_userId)',
+        )
         .order('created_at', ascending: true);
 
     final messages = response.map((e) => Message.fromMap(e)).toList();
@@ -443,30 +442,37 @@ class SupabaseService {
     final response = await _client.from('messages').insert(messageMap);
   }
 
-  void subscribeToMessages({required int itemId, required Function(Message) onNewMessage, }) {
-    if(_userId == null) return;
+  void subscribeToMessages({
+    required int itemId,
+    required Function(Message) onNewMessage,
+  }) {
+    if (_userId == null) return;
 
     _messageChannel = _client.channel('messages_channel');
 
-    _messageChannel!.onPostgresChanges(
-      event: PostgresChangeEvent.insert,
-      schema: 'public',
-      table: 'messages',
-      callback: (payload) {
-        final data = payload.newRecord;
-        if(data == null) return;
+    _messageChannel!
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'messages',
+          callback: (payload) {
+            final data = payload.newRecord;
+            if (data == null) return;
 
-        final message = Message.fromMap(data);
+            final message = Message.fromMap(data);
 
-        if(message.itemId == itemId && (message.senderId == _userId || message.receiverId == _userId)) {
-          onNewMessage(message);
-        }
-      },
-    ).subscribe();
+            if (message.itemId == itemId &&
+                (message.senderId == _userId ||
+                    message.receiverId == _userId)) {
+              onNewMessage(message);
+            }
+          },
+        )
+        .subscribe();
   }
 
   void unsubscribeFromMessages() {
-    if(_messageChannel != null) {
+    if (_messageChannel != null) {
       _client.removeChannel(_messageChannel!);
       _messageChannel = null;
     }
@@ -485,7 +491,8 @@ class SupabaseService {
       for (var item in response) {
         final int senderId = item['sender_id'];
         final int receiverId = item['receiver_id'];
-        final int otherUserId = senderId == currentUserId ? receiverId : senderId;
+        final int otherUserId =
+            senderId == currentUserId ? receiverId : senderId;
 
         // Avoid adding duplicate chats
         if (!chatMap.containsKey(otherUserId)) {
