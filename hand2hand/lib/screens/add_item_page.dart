@@ -23,7 +23,6 @@ class _AddItemPageState extends State<AddItemPage> {
   final TextEditingController _moreInfoController = TextEditingController();
   DateTime? _selectedDate; // Stores the selected date
   String? _selectedTradePoint; // Stores dropdown selection for trade point
-  String? _donateOrTrade; // Stores dropdown selection for donation trade
   String? _selectedCategory; // Stores dropdown selection for category
   File? _selectedImage;
   final TextEditingController _quantityController = TextEditingController();
@@ -86,62 +85,6 @@ class _AddItemPageState extends State<AddItemPage> {
     }
   }
 
-  void _showActionPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(
-            'Select Action',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.redHatDisplay(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 66, 66, 66),
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text(
-                  'Donate',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _donateOrTrade = 'Donate';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'Trade',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _donateOrTrade = 'Trade';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   void _showCategoryPopup(BuildContext context) {
     showDialog(
       context: context,
@@ -189,7 +132,6 @@ class _AddItemPageState extends State<AddItemPage> {
 
     if (_productController.text.isEmpty ||
         _selectedDate == null ||
-        _donateOrTrade == null ||
         _selectedTradePoint == null ||
         _selectedCategory == null ||
         _selectedImage == null) {
@@ -233,7 +175,6 @@ class _AddItemPageState extends State<AddItemPage> {
         _productController.text, // Name
         quantity, // Quantity
         _selectedDate!, // Expiration Date
-        _donateOrTrade == 'Trade' ? 1 : 0, // Action: 1 for Trade, 0 for Offer
         _selectedTradePointCoordinates?.latitude ?? 0.0, // Latitude
         _selectedTradePointCoordinates?.longitude ?? 0.0, // Longitude
         _moreInfoController.text, // Description
@@ -256,7 +197,6 @@ class _AddItemPageState extends State<AddItemPage> {
         _productController.clear();
         _quantityController.clear();
         _selectedDate = null;
-        _donateOrTrade = null;
         _selectedTradePoint = null;
         _selectedImage = null;
       });
@@ -475,60 +415,6 @@ class _AddItemPageState extends State<AddItemPage> {
                     ),
                   ],
                 ),
-              ),
-            ),
-            // Donate or Trade options
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: 150,
-                    child: Text(
-                      'ACTION',
-                      style: GoogleFonts.redHatDisplay(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 66, 66, 66),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 150,
-                    child: GestureDetector(
-                      onTap: () => _showActionPopup(context),
-                      child: Container(
-                        height: 42,
-                        padding: EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              _donateOrTrade ?? 'Select Action',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color:
-                                    _donateOrTrade == null
-                                        ? Colors.grey
-                                        : Colors.black,
-                              ),
-                            ),
-                            Icon(Icons.arrow_drop_down),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ),
 

@@ -23,7 +23,6 @@ class NotificationsPage extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.grey[100],
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Column(
@@ -55,8 +54,8 @@ class NotificationsPage extends StatelessWidget {
                     if (requests.isEmpty) {
                       return const Center(
                         child: Text(
-                          'No new requests.',
-                          style: TextStyle(color: Colors.grey),
+                          'No new requests',
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
                         ),
                       );
                     }

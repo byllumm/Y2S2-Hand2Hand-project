@@ -13,7 +13,6 @@ class MyItemsScreen extends StatefulWidget {
   _MyItemsScreenState createState() => _MyItemsScreenState();
 }
 
-
 class _MyItemsScreenState extends State<MyItemsScreen> {
   late Stream<List<Map<String, dynamic>>> itemsStream;
 
@@ -27,7 +26,6 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
     String name,
     int quantity,
     DateTime expirationDate,
-    int action,
     double latitude,
     double longitude,
     String description,
@@ -39,7 +37,6 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
         name, // Name
         quantity, // Quantity
         expirationDate, // Expiration Date
-        action, // Action: 0 for offer, 1 for trade
         latitude, // Latitude
         longitude, // Longitude
         description, // Description
@@ -121,7 +118,6 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Exp Date: ${item['expirationDate']}'),
-                      Text('Action: ${item['action']}'),
                       Text('Trade Point: ${item['tradePoint']}'),
                       Text('Details: ${item['details']}'),
                     ],
