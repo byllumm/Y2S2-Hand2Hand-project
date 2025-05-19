@@ -307,7 +307,6 @@ class SupabaseService {
       String name,
       int quantity,
       DateTime expDate,
-      int action, // 0 for offer, 1 for trade
       double latitude, // Updated to accept latitude
       double longitude, // Updated to accept longitude
       String description,
@@ -342,7 +341,6 @@ class SupabaseService {
         'name': name,
         'quantity': quantity,
         'expirationDate': expDate.toIso8601String(),
-        'action': action, // 0 for offer, 1 for trade
         'latitude': latitude, // Save latitude
         'longitude': longitude, // Save longitude
         'description': description,
