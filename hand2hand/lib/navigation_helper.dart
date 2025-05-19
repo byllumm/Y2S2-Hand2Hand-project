@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'screens/my_items_screen.dart';
 import 'sign_up_screen.dart';
-import 'sign_in_screen.dart'; // Import the SignInScreen
+import 'sign_in_screen.dart';
+import '../supabase_service.dart';
+
+final service = SupabaseService();
 
 void navigateToBrowseItemsScreen(BuildContext context) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => MyItemsScreen()),
+    MaterialPageRoute(builder: (context) => MyItemsScreen(service: service)),
   );
 }
 
