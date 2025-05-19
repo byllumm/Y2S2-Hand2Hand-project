@@ -7,6 +7,22 @@ import 'package:hand2hand/screens/explorer_page.dart';
 
 class MockSupabaseService extends Mock implements SupabaseService {}
 
+List<Map<String, dynamic>> filterItems(
+  List<Map<String, dynamic>> items,
+  String? selectedCategory,
+  String searchQuery,
+) {
+  return items.where((item) {
+    final category = item['category'] ?? '';
+    final name = (item['name'] ?? '').toString().toLowerCase();
+    final matchesCategory =
+        selectedCategory == null || selectedCategory == category;
+    final matchesSearch =
+        searchQuery.isEmpty || name.contains(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  }).toList();
+}
+
 void main() {
   late MockSupabaseService mockService;
 
@@ -61,5 +77,41 @@ void main() {
 
     expect(find.text('Maçã'), findsOneWidget);
     expect(find.byType(GridView), findsOneWidget);
+  });
+
+  group('filterItems', () {
+    final mockData = [
+      {'name': 'Maçã', 'category': 'Fruits'},
+      {'name': 'Cenoura', 'category': 'Vegetables'},
+      {'name': 'Leite', 'category': 'Dairy'},
+    ];
+
+    test('returns all items when no filters are applied', () {
+      final result = filterItems(mockData, null, '');
+      expect(result.length, 3);
+    });
+
+    test('filters by category', () {
+      final result = filterItems(mockData, 'Fruits', '');
+      expect(result.length, 1);
+      expect(result[0]['name'], 'Maçã');
+    });
+
+    test('filters by search query', () {
+      final result = filterItems(mockData, null, 'cenoura');
+      expect(result.length, 1);
+      expect(result[0]['name'], 'Cenoura');
+    });
+
+    test('filters by category and search query', () {
+      final result = filterItems(mockData, 'Dairy', 'leite');
+      expect(result.length, 1);
+      expect(result[0]['name'], 'Leite');
+    });
+
+    test('returns empty when no match is found', () {
+      final result = filterItems(mockData, 'Meat', 'banana');
+      expect(result, isEmpty);
+    });
   });
 }
