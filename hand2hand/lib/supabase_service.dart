@@ -476,24 +476,39 @@ class SupabaseService {
     try {
       final response = await _client
           .from('messages')
-          .select('*, users:receiver_id(username)')
+          .select('''
+          id, sender_id, receiver_id, item_id, content, created_at,
+          sender:sender_id(username),
+          receiver:receiver_id(username),
+          items:item_id(name, image)
+        ''')
           .or('sender_id.eq.$currentUserId,receiver_id.eq.$currentUserId')
           .order('created_at', ascending: false);
 
-      Map<int, ChatPreview> chatMap = {};
+      Map<String, ChatPreview> chatMap = {};
 
       for (var item in response) {
         final int senderId = item['sender_id'];
         final int receiverId = item['receiver_id'];
-        final int otherUserId = senderId == currentUserId ? receiverId : senderId;
 
-        // Avoid adding duplicate chats
-        if (!chatMap.containsKey(otherUserId)) {
-          chatMap[otherUserId] = ChatPreview(
-            chatId: item['item_id'],
-            userId: otherUserId,
-            username: item['users']['username'],
-            lastMessage: item['content'],
+        final bool isCurrentUserSender = senderId == currentUserId;
+        final int otherUserId = isCurrentUserSender ? receiverId : senderId;
+
+        final otherUsername = isCurrentUserSender
+            ? (item['receiver']?['username'] ?? 'Unknown')
+            : (item['sender']?['username'] ?? 'Unknown');
+
+        final itemData = item['items'];
+        final String chatKey = '${item['item_id']}_$otherUserId';
+
+        if (!chatMap.containsKey(chatKey)) {
+          chatMap[chatKey] = ChatPreview(
+            itemId: item['item_id'],
+            itemName: itemData?['name'] ?? 'Unnamed Item',
+            otherUserId: otherUserId,
+            otherUsername: otherUsername,
+            itemImage: itemData?['image'],
+            lastMessage: item['content'] ?? '',
             lastMessageTime: DateTime.parse(item['created_at']),
           );
         }

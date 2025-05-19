@@ -94,7 +94,7 @@ void main() {
       await tester.pump();
 
       verify(() => mockService.sendMessage(any())).called(1);
-      expect(find.text('Hi there'), findsOneWidget); // now added to the list
+      expect(find.text('Hi there'), findsNothing); // input cleared
       expect(find.byType(TextField), findsOneWidget);
     });
 
@@ -142,7 +142,7 @@ void main() {
       expect(find.widgetWithIcon(GestureDetector, Icons.send), findsOneWidget);
     });
 
-    /*testWidgets('Clears input field after sending message', (tester) async {
+    testWidgets('Clears input field after sending message', (tester) async {
       when(() => mockService.sendMessage(any())).thenAnswer((_) async {});
 
       await tester.pumpWidget(MaterialApp(
@@ -161,8 +161,6 @@ void main() {
 
       expect(find.text('Test clear'), findsNothing);
     });
-
-     */
 
 
   });

@@ -1,14 +1,18 @@
 class ChatPreview {
-  final int chatId;
-  final int userId;
-  final String username;
+  final int itemId;
+  final String itemName;
+  final int otherUserId;
+  final String otherUsername;
+  final String? itemImage;
   final String lastMessage;
   final DateTime lastMessageTime;
 
   ChatPreview({
-    required this.chatId,
-    required this.userId,
-    required this.username,
+    required this.itemId,
+    required this.itemName,
+    required this.otherUserId,
+    required this.otherUsername,
+    this.itemImage,
     required this.lastMessage,
     required this.lastMessageTime,
   });

@@ -16,24 +16,26 @@ void main() {
   });
 
   testWidgets('displays chat data after loading', (tester) async {
+    final now = DateTime.now().toUtc();
     final fakeChat = ChatPreview(
-      chatId: 1,
-      userId: 42,
-      username: 'Alice',
+      itemId: 10,
+      itemName: 'Apples',
+      otherUserId: 42,
+      otherUsername: 'Alice',
+      itemImage: null,
       lastMessage: 'Hello!',
-      lastMessageTime: DateTime(2025, 5, 15, 14, 30),
+      lastMessageTime: DateTime(now.year, now.month, now.day, 14, 30),
     );
 
-      when(() => mockService.currentUserId).thenReturn(123);
-
-
-      when(() => mockService.getUserChats(123)).thenAnswer((_) async => [fakeChat]);
+    when(() => mockService.currentUserId).thenReturn(123);
+    when(() => mockService.getUserChats(123)).thenAnswer((_) async => [fakeChat]);
 
     await tester.pumpWidget(MaterialApp(home: ChatListPage(service: mockService)));
 
     await tester.pumpAndSettle();
 
-    expect(find.text('Alice'), findsOneWidget);
+    expect(find.text('Apples'), findsOneWidget);
+    expect(find.text('@Alice'), findsOneWidget);
     expect(find.text('Hello!'), findsOneWidget);
     expect(find.text('14:30'), findsOneWidget);
   });
@@ -73,12 +75,15 @@ void main() {
   });
 
   testWidgets('displays time with leading zero in minutes', (tester) async {
+    final now = DateTime.now().toUtc();
     final fakeChat = ChatPreview(
-      chatId: 1,
-      userId: 42,
-      username: 'Alice',
+      itemId: 10,
+      itemName: 'Apples',
+      otherUserId: 42,
+      otherUsername: 'Alice',
+      itemImage: null,
       lastMessage: 'Hello!',
-      lastMessageTime: DateTime(2025, 5, 15, 14, 5),
+      lastMessageTime: DateTime(now.year, now.month, now.day, 14, 5),
     );
 
     when(() => mockService.currentUserId).thenReturn(123);
@@ -103,9 +108,25 @@ void main() {
   });
 
   testWidgets('displays multiple chat previews correctly', (tester) async {
-    final chats = [
-      ChatPreview(chatId: 1, userId: 101, username: 'Alice', lastMessage: 'Hi', lastMessageTime: DateTime(2025, 5, 15, 9, 0)),
-      ChatPreview(chatId: 2, userId: 102, username: 'Bob', lastMessage: 'Yo', lastMessageTime: DateTime(2025, 5, 15, 10, 0)),
+    final List<ChatPreview> chats = [
+      ChatPreview(
+        itemId: 1,
+        itemName: 'Apples',
+        otherUserId: 101,
+        otherUsername: 'Alice',
+        itemImage: null, // or provide a fake URL if needed
+        lastMessage: 'Hi',
+        lastMessageTime: DateTime(2025, 5, 15, 9, 0),
+      ),
+      ChatPreview(
+        itemId: 2,
+        itemName: 'Oranges',
+        otherUserId: 102,
+        otherUsername: 'Bob',
+        itemImage: null,
+        lastMessage: 'Yo',
+        lastMessageTime: DateTime(2025, 5, 15, 10, 0),
+      ),
     ];
 
     when(() => mockService.currentUserId).thenReturn(123);
@@ -115,8 +136,10 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text('Alice'), findsOneWidget);
-    expect(find.text('Bob'), findsOneWidget);
+    expect(find.text('Apples'), findsOneWidget);
+    expect(find.text('Oranges'), findsOneWidget);
+    expect(find.text('@Alice'), findsOneWidget);
+    expect(find.text('@Bob'), findsOneWidget);
     expect(find.text('Hi'), findsOneWidget);
     expect(find.text('Yo'), findsOneWidget);
   });
