@@ -215,7 +215,7 @@ We made a scale with the MoSCoW method's categories. <br/>
 ### Domain model
 
 <p align="center" justify="center">
- <img src="https://github.com/LEIC-ES-2024-25/2LEIC01T5/blob/master/models/domainmodel.png"/>
+ <img src="images/models/domainmodel.png"/>
 </p>
 
 ## Architecture and Design
@@ -233,13 +233,14 @@ In this section you should start by briefly describing the components of the pro
 ### Logical architecture
 
 <p align="center" justify="center">
- <img src = "https://github.com/user-attachments/assets/e842c2fd-ba6a-453c-b7b8-5a8cd2825e8f"/>
+ <img src =images/models/logical_architecture
+  />
 </p>
 
 
 ### Physical architecture
 <p align="center" justify="center">
- <img src="https://github.com/LEIC-ES-2024-25/2LEIC01T5/blob/master/models/physical-view.png"/>
+ <img src=images/models/physical-view.png />
 </p>
 
 <!--
@@ -290,11 +291,11 @@ You can find below information and references related with the project managemen
 ### Sprint 1
 
 <p align="center" justify="center">
-  <img alt="Sprint_1" src="https://github.com/user-attachments/assets/4f2a9ac5-369b-418d-a170-ee218b9d2a79"/>
+  <img alt="Sprint_1" src=images/sprints/Sprint_1.png />
 </p>
 
 <p align="center" justify="center">
-  <img alt="Sprint_1_end" src="https://github.com/user-attachments/assets/4030d008-162a-4a2a-ba19-6a4cb6d799cd" />
+  <img alt="Sprint_1_end" src=images/sprints/Sprint_1_end.png />
 </p>
 
 
@@ -309,11 +310,11 @@ Additionally, we discovered that integrating map and location-based features is 
 ### Sprint 2
 
 <p align="center" justify="center">
-  <img alt="Sprint_2" src="https://github.com/user-attachments/assets/efa99166-b1e9-4775-b1a9-4a9de1fd8a00" />
+  <img alt="Sprint_2" src=images/sprints/Sprint_2.png />
 </p>
 
 <p align="center" justify="center">
-  <img alt="Sprint_2_end" src="https://github.com/user-attachments/assets/0342e724-6710-453e-80c8-6ed4b5ec02a6" />
+  <img alt="Sprint_2_end" src=images/sprints/Sprint_2_end.png />
 </p>
 
 
@@ -326,9 +327,17 @@ Despite these setbacks, we gained valuable insights from this sprint and will mo
 ### Sprint 3
 
 <p align="center" justify="center">
-  <img alt="Sprint_3" src="https://github.com/user-attachments/assets/265c73e4-d423-4ea4-b267-eda0ee77faaf" />
+  <img alt="Sprint_3" src=images/sprints/Sprint_3.png />
 </p>
 
-### Sprint 4
+<p align="center" justify="center">
+  <img alt="Sprint_3_end" src=images/sprints/Sprint_3_end.png />
+</p>
+
+During the third sprint, we successfully achieved all the objectives set for this phase of development. All planned features were implemented and are working as expected. We especially highlight the overall stability of the application and the smooth integration between the various developed components.
+
+This sprint progressed without any major issues. The team maintained effective communication, and coordination between members was very positive. The best development practices, established after the challenges of the previous sprint, were consistently applied and directly contributed to the strong performance of the work.
+
+We are very satisfied with the results of this delivery. The application is becoming increasingly robust and functional, and this sprint reinforced the team’s confidence in the project’s direction. We remain motivated to keep improving and to face the upcoming challenges with the same commitment.
 
 ### Final Release
