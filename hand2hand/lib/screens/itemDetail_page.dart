@@ -203,6 +203,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                   (context) => TradePoint(
                                     latitude: item['latitude'],
                                     longitude: item['longitude'],
+                                    imageUrl: item['image'],
                                   ),
                             ),
                           );
