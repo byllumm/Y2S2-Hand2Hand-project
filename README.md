@@ -312,8 +312,22 @@ Additionally, we discovered that integrating map and location-based features is 
   <img alt="Sprint_2" src="https://github.com/user-attachments/assets/efa99166-b1e9-4775-b1a9-4a9de1fd8a00" />
 </p>
 
+<p align="center" justify="center">
+  <img alt="Sprint_2_end" src="https://github.com/user-attachments/assets/0342e724-6710-453e-80c8-6ed4b5ec02a6" />
+</p>
+
+
+During the second sprint, we achieved some important milestones. The notification feature was successfully developed, as well as the ability to remove items—both fully tested and performing as expected. These accomplishments show solid progress in delivering key functionality.
+
+However, we also faced significant challenges. The most critical issue was a problematic merge between development branches, which led to unexpected conflicts and considerable delays. This highlighted the need to improve our version control practices and adopt more rigorous continuous integration strategies, as well as strengthen coordination within the team.
+
+Despite these setbacks, we gained valuable insights from this sprint and will move forward better prepared for upcoming challenges.
 
 ### Sprint 3
+
+<p align="center" justify="center">
+  <img alt="Sprint_3" src="https://github.com/user-attachments/assets/265c73e4-d423-4ea4-b267-eda0ee77faaf" />
+</p>
 
 ### Sprint 4
 

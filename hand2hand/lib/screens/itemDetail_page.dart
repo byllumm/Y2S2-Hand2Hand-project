@@ -217,10 +217,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     const SizedBox(height: 10),
                     infoRow("EXP. DATE", item['expirationDate'] ?? ''),
                     const SizedBox(height: 10),
-                    infoRow(
-                      "DONATE/TRADE",
-                      item['action'] == 0 ? "Donate" : "Trade",
-                    ),
+                    infoRow("CATEGORY", item['category'] ?? ''),
                     const SizedBox(height: 20),
                     // Description
                     Text(

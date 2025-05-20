@@ -23,10 +23,22 @@ class _AddItemPageState extends State<AddItemPage> {
   final TextEditingController _moreInfoController = TextEditingController();
   DateTime? _selectedDate; // Stores the selected date
   String? _selectedTradePoint; // Stores dropdown selection for trade point
-  String? _donateOrTrade; // Stores dropdown selection for donation trade
+  String? _selectedCategory; // Stores dropdown selection for category
   File? _selectedImage;
   final TextEditingController _quantityController = TextEditingController();
   LatLng? _selectedTradePointCoordinates; // Add this to store coordinates
+
+  final List<String> _categories = [
+    'Dairy',
+    'Drinks',
+    'Fish',
+    'Fruits',
+    'Grains',
+    'Meat',
+    'Sweets',
+    'Vegetables',
+    'Other',
+  ];
 
   @override
   void dispose() async {
@@ -73,13 +85,13 @@ class _AddItemPageState extends State<AddItemPage> {
     }
   }
 
-  void _showActionPopup(BuildContext context) {
+  void _showCategoryPopup(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text(
-            'Select Action',
+            'Select Category',
             textAlign: TextAlign.center,
             style: GoogleFonts.redHatDisplay(
               fontSize: 20,
@@ -89,40 +101,25 @@ class _AddItemPageState extends State<AddItemPage> {
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: Text(
-                  'Donate',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _donateOrTrade = 'Donate';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'Trade',
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _donateOrTrade = 'Trade';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+            children:
+                _categories.map((category) {
+                  return ListTile(
+                    title: Text(
+                      category,
+                      style: GoogleFonts.redHatDisplay(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        _selectedCategory = category;
+                      });
+                      Navigator.pop(context);
+                    },
+                  );
+                }).toList(),
           ),
         );
       },
@@ -135,8 +132,8 @@ class _AddItemPageState extends State<AddItemPage> {
 
     if (_productController.text.isEmpty ||
         _selectedDate == null ||
-        _donateOrTrade == null ||
         _selectedTradePoint == null ||
+        _selectedCategory == null ||
         _selectedImage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -178,11 +175,11 @@ class _AddItemPageState extends State<AddItemPage> {
         _productController.text, // Name
         quantity, // Quantity
         _selectedDate!, // Expiration Date
-        _donateOrTrade == 'Trade' ? 1 : 0, // Action: 1 for Trade, 0 for Offer
         _selectedTradePointCoordinates?.latitude ?? 0.0, // Latitude
         _selectedTradePointCoordinates?.longitude ?? 0.0, // Longitude
         _moreInfoController.text, // Description
         _selectedImage!, // Image File
+        _selectedCategory,
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -200,7 +197,6 @@ class _AddItemPageState extends State<AddItemPage> {
         _productController.clear();
         _quantityController.clear();
         _selectedDate = null;
-        _donateOrTrade = null;
         _selectedTradePoint = null;
         _selectedImage = null;
       });
@@ -421,15 +417,17 @@ class _AddItemPageState extends State<AddItemPage> {
                 ),
               ),
             ),
-            // Donate or Trade options
+
+            // Category options
             Padding(
               padding: EdgeInsets.symmetric(vertical: 15),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: 235,
+                    width: 150,
                     child: Text(
-                      'ACTION',
+                      'CATEGORY',
                       style: GoogleFonts.redHatDisplay(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -437,14 +435,15 @@ class _AddItemPageState extends State<AddItemPage> {
                       ),
                     ),
                   ),
-                  Expanded(
+                  SizedBox(
+                    width: 150,
                     child: GestureDetector(
-                      onTap: () => _showActionPopup(context),
+                      onTap: () => _showCategoryPopup(context),
                       child: Container(
                         height: 42,
                         padding: EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 15,
+                          vertical: 10,
+                          horizontal: 10,
                         ),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
@@ -454,12 +453,12 @@ class _AddItemPageState extends State<AddItemPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              _donateOrTrade ?? 'Select Action',
+                              _selectedCategory ?? 'Select Category',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                                 color:
-                                    _donateOrTrade == null
+                                    _selectedCategory == null
                                         ? Colors.grey
                                         : Colors.black,
                               ),
@@ -480,7 +479,7 @@ class _AddItemPageState extends State<AddItemPage> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 120,
+                    width: 150,
                     child: Text(
                       'TRADE POINT',
                       style: GoogleFonts.redHatDisplay(
@@ -496,7 +495,6 @@ class _AddItemPageState extends State<AddItemPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          SizedBox(width: 8),
                           Text(
                             _selectedTradePoint ?? 'Choose on Map',
                             textAlign: TextAlign.right,

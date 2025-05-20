@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hand2hand/message.dart';
+import 'package:hand2hand/navigation_helper.dart';
+import 'package:hand2hand/screens/chatlist_page.dart';
 import 'package:hand2hand/supabase_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/intl.dart';
 
 class ChatScreen extends StatefulWidget {
   final int itemId;
   final int receiverId;
+  final SupabaseService supabaseService;
 
-  const ChatScreen({Key? key, required this.itemId, required this.receiverId})
-    : super(key: key);
+  ChatScreen({
+    Key? key,
+    required this.itemId,
+    required this.receiverId,
+    SupabaseService? supabaseService, // nullable param
+  })  : supabaseService = supabaseService ?? SupabaseService(),
+        super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -17,21 +27,22 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final _controller = TextEditingController();
   final _messages = <Message>[];
-  Map<int, String> _usernamesCache = {};
   bool _isLoading = false;
-  RealtimeChannel? _messageChannel;
+  String _receiverUsername = '';
+  Color _sendButtonColor = const Color.fromARGB(255, 222, 79, 79);
+  late SupabaseService _service;
 
   @override
   void initState() {
     super.initState();
+    _service = widget.supabaseService;
+
     _loadMessages();
+    _loadReceiverUsername();
 
-    SupabaseService().subscribeToMessages (itemId: widget.itemId, onNewMessage: (Message newMessage) async {
-        if (!_usernamesCache.containsKey(newMessage.senderId)) {
-          final user = await SupabaseService().getUserById(newMessage.senderId);
-          _usernamesCache[newMessage.senderId] = user?['username'] ?? 'Unknown';
-        }
-
+    _service.subscribeToMessages(
+      itemId: widget.itemId,
+      onNewMessage: (Message newMessage) {
         setState(() {
           _messages.add(newMessage);
         });
@@ -41,68 +52,133 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    SupabaseService().unsubscribeFromMessages();
+    _service.unsubscribeFromMessages();
     super.dispose();
+  }
+
+  void _sendButtonTap() {
+    setState(() {
+      _sendButtonColor = const Color.fromARGB(255, 188, 36, 36);
+    });
+    _sendMessage();
+  }
+
+  void _sendButtonRelease() {
+    setState(() {
+      _sendButtonColor = const Color.fromARGB(255, 222, 79, 79);
+    });
+  }
+
+  Future<void> _sendMessage() async {
+    if (_controller.text.isEmpty) return;
+
+    try {
+      final currentUserId = _service.currentUserId!;
+      final message = Message(
+        senderId: currentUserId,
+        receiverId: widget.receiverId,
+        itemId: widget.itemId,
+        content: _controller.text,
+        createdAt: DateTime.now().toUtc(),
+      );
+
+      await _service.sendMessage(message);
+
+      setState(() {
+        _controller.clear();
+      });
+    } catch (e) {
+      print('Error sending message: $e');
+    }
   }
 
   Future<void> _loadMessages() async {
     try {
       setState(() => _isLoading = true);
-      final messages = await SupabaseService().getMessages(widget.itemId, widget.receiverId);
-      
-      for(var message in messages) {
-        if(!_usernamesCache.containsKey(message.senderId)){
-          final user = await SupabaseService().getUserById(message.senderId);
+      final messages =
+      await _service.getMessages(widget.itemId, widget.receiverId);
 
-          if(user != null) {
-            _usernamesCache[message.senderId] = user['username'];
-          }
-
-          else {
-            _usernamesCache[message.senderId] = 'Unknown';
-          }
-        }
-      }
-      
       setState(() {
         _messages.addAll(messages);
       });
-    }
-
-    catch (e) {
+    } catch (e) {
       print('Error loading messages: $e');
-    }
-
-    finally {
+    } finally {
       setState(() => _isLoading = false);
     }
   }
 
-  Future<void> _sendMessage() async {
-    if(_controller.text.isEmpty) return;
+  Future<void> _loadReceiverUsername() async {
+    final user = await _service.getUserById(widget.receiverId);
+    setState(() {
+      _receiverUsername = user?['username'] ?? 'unknown';
+    });
+  }
 
-    try {
-      final currentUserId = SupabaseService().currentUserId!;
-      final message = Message(
-        id: 0,
-        senderId: currentUserId,
-        receiverId: widget.receiverId,
-        itemId: widget.itemId,
-        content: _controller.text,
-        createdAt: DateTime.now(),
-      );
+  Widget _buildMessageBubble(Message message) {
+    final isMe = message.senderId == _service.currentUserId;
+    final alignment =
+    isMe ? Alignment.centerRight : Alignment.centerLeft;
+    final bubbleColor =
+    isMe ? const Color.fromARGB(223, 255, 233, 153) : Colors.grey[300];
+    final formattedTime = _formattingTime(message.createdAt);
 
+    return Align(
+      alignment: alignment,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+        padding:
+        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.7,
+        ),
+        decoration: BoxDecoration(
+          color: bubbleColor,
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Column(
+          crossAxisAlignment:
+          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Text(
+              message.content,
+              style: GoogleFonts.outfit(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              formattedTime,
+              style: GoogleFonts.outfit(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-      await SupabaseService().sendMessage(message);
+  String _formattingTime(DateTime time) {
+    final now = DateTime.now().toUtc();
+    final msgTime = time.toUtc();
+    final difference = now.difference(msgTime);
 
-      setState(() {
-        _messages.add(message);
-        _controller.clear();
-      });
-    }
+    final today = DateTime(now.year, now.month, now.day);
+    final msgDay = DateTime(msgTime.year, msgTime.month, msgTime.day);
 
-    catch(e) {
-      print('Error sending message: $e');
+    if (difference.inMinutes < 1) {
+      return 'Just now';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes}m ago';
+    } else if (difference.inHours < 24 && msgDay == today) {
+      return DateFormat.Hm().format(msgTime.toLocal());
+    } else if (difference.inDays < 7) {
+      return DateFormat.E().format(msgTime.toLocal());
+    } else {
+      return DateFormat('dd/MM').format(msgTime.toLocal());
     }
   }
 
@@ -110,7 +186,22 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat'),
+        automaticallyImplyLeading: false,
+        leading: IconButton (
+          icon: Icon(Icons.arrow_back_ios, color: Color.fromARGB(255, 222, 79, 79)),
+          onPressed: () {
+            navigateWithTransition(context, ChatListPage());
+          },
+        ),
+        title: Text(
+          '@${_receiverUsername}',
+          style: GoogleFonts.outfit(
+            fontSize: 26,
+            color: Color.fromARGB(255, 222, 79, 79),
+          ),
+        ),
+        backgroundColor: Color.fromARGB(223, 255, 213, 63),
+        elevation: 0,
       ),
 
       body: SafeArea(
@@ -120,16 +211,13 @@ class _ChatScreenState extends State<ChatScreen> {
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
-                    itemCount: _messages.length,
-                    itemBuilder: (context, index) {
-                      final message = _messages[index];
-                      return ListTile(
-                        title: Text(message.content),
-                        subtitle: Text(_usernamesCache[message.senderId] ?? '...'),
-                        trailing: Text('${message.createdAt.hour}:${message.createdAt.minute}'),
-                      );
-                    },
-                  ),
+                reverse: false,
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  final message = _messages[index];
+                  return _buildMessageBubble(message);
+                },
+              ),
             ),
 
             Padding(
@@ -139,14 +227,51 @@ class _ChatScreenState extends State<ChatScreen> {
                   Expanded(
                     child: TextField(
                       controller: _controller,
-                      decoration: const InputDecoration(
-                        hintText: 'Type a message...',
+                      decoration: InputDecoration(
+                          hintText: 'Type a message...',
+                          hintStyle: TextStyle(color: Colors.grey[500]),
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(color: Color.fromARGB(223, 255, 213, 63), width: 2),
+                          )
                       ),
                     ),
                   ),
-                  IconButton(
-                    onPressed: _sendMessage,
-                    icon: const Icon(Icons.send),
+                  SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: _sendButtonTap,
+                    onTapUp: (_) => _sendButtonRelease(),
+                    onTapCancel: _sendButtonRelease,
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: _sendButtonColor,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                      child : Icon(
+                        Icons.send,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
                   ),
                 ],
               ),

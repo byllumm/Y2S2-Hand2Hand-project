@@ -17,7 +17,6 @@ class Message {
 
   Map<String, dynamic> toMap(){
     return {
-      'id': id,
       'sender_id': senderId,
       'receiver_id': receiverId,
       'item_id': itemId,
@@ -29,8 +28,8 @@ class Message {
   factory Message.fromMap(Map<String, dynamic> data) {
     return Message(
       id: data['id'],
-      senderId: data['sender-id'],
-      receiverId: data['receiver-id'],
+      senderId: data['sender_id'],
+      receiverId: data['receiver_id'],
       itemId: data['item_id'],
       content: data['content'],
       createdAt: DateTime.parse(data['created_at']),

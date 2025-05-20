@@ -4,46 +4,44 @@ import '../add_item_dialog.dart';
 import 'package:hand2hand/screens/add_item_page.dart';
 import 'dart:io';
 
-
-
 class MyItemsScreen extends StatefulWidget {
-  final SupabaseService supabaseService;
-  MyItemsScreen({super.key, SupabaseService? service}) : supabaseService = service ?? SupabaseService();
+  final SupabaseService service;
+
+  const MyItemsScreen({super.key, required this.service});
 
   @override
   _MyItemsScreenState createState() => _MyItemsScreenState();
 }
 
 class _MyItemsScreenState extends State<MyItemsScreen> {
-
   late Stream<List<Map<String, dynamic>>> itemsStream;
 
   @override
   void initState() {
     super.initState();
-    itemsStream = widget.supabaseService.streamItems();
+    itemsStream = widget.service.streamItems();
   }
 
   Future<void> _addItem(
     String name,
     int quantity,
     DateTime expirationDate,
-    int action, // 0 for offer, 1 for trade
     double latitude,
     double longitude,
     String description,
     File imageFile,
+    String? category,
   ) async {
     try {
-      await widget.supabaseService.addItem(
+      await widget.service.addItem(
         name, // Name
         quantity, // Quantity
         expirationDate, // Expiration Date
-        action, // Action: 0 for offer, 1 for trade
         latitude, // Latitude
         longitude, // Longitude
         description, // Description
         imageFile, // Image File
+        category,
       );
     } catch (e) {
       print('Error adding item: $e');
@@ -80,9 +78,9 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
 
     if (shouldDelete) {
       try {
-        await widget.supabaseService.deleteItem(id);
+        await widget.service.deleteItem(id);
         setState(() {
-          itemsStream = widget.supabaseService.streamItems();
+          itemsStream = widget.service.streamItems();
         });
       } catch (e) {
         print('Error deleting item: $e');
@@ -95,7 +93,7 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Browse Items')),
+      appBar: AppBar(title: Text('My Items')),
       body: StreamBuilder<List<Map<String, dynamic>>>(
         stream: itemsStream,
         builder: (context, snapshot) {
@@ -120,7 +118,6 @@ class _MyItemsScreenState extends State<MyItemsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Exp Date: ${item['expirationDate']}'),
-                      Text('Action: ${item['action']}'),
                       Text('Trade Point: ${item['tradePoint']}'),
                       Text('Details: ${item['details']}'),
                     ],
