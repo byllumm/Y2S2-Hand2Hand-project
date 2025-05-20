@@ -69,8 +69,6 @@ void main() {
     });
   });
 }
-
-// Extend SignInScreen to inject mock and add keys
 class SignInScreenWithMock extends StatelessWidget {
   final SupabaseService service;
 

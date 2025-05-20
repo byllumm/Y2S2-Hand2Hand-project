@@ -10,13 +10,15 @@ import 'package:hand2hand/supabase_service.dart';
 import 'package:latlong2/latlong.dart';
 
 class AddItemPage extends StatefulWidget {
-  const AddItemPage({super.key});
+  final SupabaseService? service;
+  const AddItemPage({Key? key, this.service}) : super(key: key);
 
   @override
   _AddItemPageState createState() => _AddItemPageState();
 }
 
 class _AddItemPageState extends State<AddItemPage> {
+  late final SupabaseService _service;
   bool _isSubmitting = false;
   final TextEditingController _productController =
       TextEditingController(); // Stores food type input
