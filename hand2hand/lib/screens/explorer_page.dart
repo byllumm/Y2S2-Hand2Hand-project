@@ -3,7 +3,9 @@ import 'package:hand2hand/supabase_service.dart';
 import 'package:hand2hand/screens/itemDetail_page.dart';
 
 class ExploreItems extends StatefulWidget {
-  const ExploreItems({super.key});
+  final SupabaseService? service;
+
+  const ExploreItems({super.key, this.service});
 
   @override
   _ExploreItemsState createState() => _ExploreItemsState();
@@ -13,10 +15,12 @@ class _ExploreItemsState extends State<ExploreItems> {
   final TextEditingController _searchController = TextEditingController();
   String? selectedCategory;
   String _searchQuery = '';
+  late final SupabaseService _service;
 
   @override
   void initState() {
     super.initState();
+    _service = widget.service ?? SupabaseService();
     _searchController.text = _searchQuery;
   }
 
@@ -29,7 +33,7 @@ class _ExploreItemsState extends State<ExploreItems> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: SupabaseService().streamOtherUsersItems(),
+      stream: _service.streamOtherUsersItems(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());

@@ -67,7 +67,6 @@ void main() {
           'name': 'Bread',
           'quantity': 2,
           'expirationDate': '2025-05-01',
-          'action': 0,
           'tradePoint': 'Park',
           'details': 'Fresh Bread',
         }
@@ -85,7 +84,6 @@ void main() {
 
       expect(find.text('Bread (Qty: 2)'), findsOneWidget);
       expect(find.text('Exp Date: 2025-05-01'), findsOneWidget);
-      expect(find.text('Action: 0'), findsOneWidget);
       expect(find.text('Trade Point: Park'), findsOneWidget);
       expect(find.text('Details: Fresh Bread'), findsOneWidget);
     });
