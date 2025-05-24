@@ -6,11 +6,15 @@ import 'package:hand2hand/supabase_service.dart';
 import 'pending_exchanges_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final SupabaseService supabaseService;
+
+  ProfileScreen({super.key, SupabaseService? supabaseService})
+      : supabaseService = supabaseService ?? SupabaseService();
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
+
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late Future<Map<String, dynamic>?> _userFuture;
@@ -22,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _loadUser() {
-    _userFuture = SupabaseService().getCurrentUserData();
+    _userFuture = widget.supabaseService.getCurrentUserData();
   }
 
   @override
@@ -93,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyItemsScreen(service: SupabaseService()),
+                      builder: (context) => MyItemsScreen(service: widget.supabaseService),
                     ),
                   );
                 },
