@@ -3,13 +3,15 @@ import 'package:hand2hand/supabase_service.dart';
 import 'package:hand2hand/screens/itemDetail_page.dart';
 
 class ExploreItems extends StatefulWidget {
-  final SupabaseService? service;
+  final SupabaseService service;
 
-  const ExploreItems({super.key, this.service});
+  ExploreItems({super.key, SupabaseService? service})
+      : service = service ?? SupabaseService();
 
   @override
   _ExploreItemsState createState() => _ExploreItemsState();
 }
+
 
 class _ExploreItemsState extends State<ExploreItems> {
   final TextEditingController _searchController = TextEditingController();
@@ -197,7 +199,10 @@ class _ExploreItemsState extends State<ExploreItems> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => ItemDetailPage(item: item),
+                              builder: (context) => ItemDetailPage(
+                                item: item,
+                                supabaseService: widget.service,
+                              ),
                             ),
                           );
                         },

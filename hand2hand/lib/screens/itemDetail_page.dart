@@ -5,9 +5,14 @@ import 'package:hand2hand/screens/chatscreen_page.dart';
 import 'package:hand2hand/screens/trade_point.dart';
 
 class ItemDetailPage extends StatefulWidget {
+  final SupabaseService supabaseService;
   final Map<String, dynamic> item;
 
-  const ItemDetailPage({super.key, required this.item});
+  const ItemDetailPage({
+    super.key,
+    required this.item,
+    required this.supabaseService,
+  });
 
   @override
   State<ItemDetailPage> createState() => _ItemDetailPageState();
@@ -26,13 +31,13 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 
     _checkIfRequested();
 
-    final currentUserId = SupabaseService().currentUserId;
+    final currentUserId = widget.supabaseService.currentUserId;
     _isOwnItem = currentUserId == widget.item['user_id'];
   }
 
   Future<void> _checkIfRequested() async {
     try {
-      final status = await SupabaseService().getItemStatus(widget.item['id']);
+      final status = await widget.supabaseService.getItemStatus(widget.item['id']);
       if (mounted) {
         setState(() {
           _requestMade = status['is_requested'] ?? false;
@@ -44,7 +49,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   }
 
   Future<void> fetchDonorInfo() async {
-    final donor = await SupabaseService().getUserById(widget.item['user_id']);
+    final donor = await widget.supabaseService.getUserById(widget.item['user_id']);
     if (mounted) {
       setState(() {
         donorInfo = donor;
@@ -55,19 +60,23 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   void _handleRequest() async {
     if (_requestMade || _isLoading) return;
 
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
-      // First check if user is trying to request their own item
-      final currentUserId = SupabaseService().currentUserId;
+      final currentUserId = widget.supabaseService.currentUserId;
       if (currentUserId == widget.item['user_id']) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('You cannot request your own item')),
         );
+        setState(() {
+          _isLoading = false;
+        });
         return;
       }
 
-      final status = await SupabaseService().getItemStatus(widget.item['id']);
+      final status = await widget.supabaseService.getItemStatus(widget.item['id']);
       print('Item status: $status'); // Debug log
 
       if (!status['available']) {
@@ -77,36 +86,40 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         } else if (status['is_deleted']) {
           message = 'Item has been deleted';
         }
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        setState(() {
+          _isLoading = false;
+        });
         return;
       }
 
-      final success = await SupabaseService().requestItem(widget.item['id']);
+      final success = await widget.supabaseService.requestItem(widget.item['id']);
       print('Request success: $success'); // Debug log
 
       if (success) {
+        setState(() {
+          _requestMade = true;
+          _isLoading = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Item requested successfully')),
         );
-        setState(() {
-          _requestMade = true;
-        });
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Failed to request item')));
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to request item')),
+        );
       }
     } catch (e) {
       print('Error during request: $e');
+      setState(() {
+        _isLoading = false;
+      });
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
     }
   }
 
