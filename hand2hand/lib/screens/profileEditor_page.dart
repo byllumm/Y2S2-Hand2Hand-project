@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hand2hand/supabase_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
+  final SupabaseService supabaseService;
+  final bool popOnSave;
+  EditProfileScreen({super.key, SupabaseService? service, this.popOnSave = true})
+      : supabaseService = service ?? SupabaseService();
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -10,7 +13,6 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final SupabaseService _supabaseService = SupabaseService();
 
   TextEditingController? _nameController;
   TextEditingController? _usernameController;
@@ -26,7 +28,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _loadUserData() async {
-    final userData = await _supabaseService.getCurrentUserData();
+    final userData = await widget.supabaseService.getCurrentUserData();
     if (mounted && userData != null) {
       setState(() {
         _nameController = TextEditingController(text: userData['name'] ?? '');
@@ -46,10 +48,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final navigator = Navigator.of(context);
 
     try {
-      final userId = _supabaseService.currentUserId;
+      final userId = widget.supabaseService.currentUserId;
       if (userId == null) throw Exception("User not logged in");
 
-      await _supabaseService.updateUserProfile(
+      await widget.supabaseService.updateUserProfile(
         userId: userId,
         name: _nameController!.text.trim(),
         username: _usernameController!.text.trim(),
@@ -61,7 +63,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         const SnackBar(content: Text('Profile updated successfully')),
       );
 
-      navigator.pop(); // Safely using saved navigator
+      if (widget.popOnSave) {
+        navigator.pop();
+      }// Safely using saved navigator
     } catch (e) {
       messenger.showSnackBar(
         SnackBar(content: Text('Error updating profile: $e')),

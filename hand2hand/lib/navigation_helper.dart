@@ -6,7 +6,7 @@ import '../supabase_service.dart';
 
 final service = SupabaseService();
 
-void navigateToBrowseItemsScreen(BuildContext context) {
+void navigateToBrowseItemsScreen(BuildContext context, SupabaseService service) {
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => MyItemsScreen(service: service)),
