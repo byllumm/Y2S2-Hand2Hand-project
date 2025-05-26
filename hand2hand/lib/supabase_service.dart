@@ -179,7 +179,7 @@ class SupabaseService {
     return _client
         .from('notifications')
         .stream(primaryKey: ['id'])
-        .eq('user_id', _userId!)
+        .eq('recipient_id', _userId!)
         .order('created_at', ascending: false)
         .map((data) => List<Map<String, dynamic>>.from(data));
   }
