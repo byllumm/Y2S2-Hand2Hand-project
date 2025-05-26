@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'my_items_screen.dart';
 import 'profileEditor_page.dart';
 import 'package:hand2hand/supabase_service.dart';
-import 'pending_exchanges_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final SupabaseService supabaseService;
@@ -103,26 +102,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
               ),
 
-              ListTile(
-                leading: const Icon(Icons.shopping_bag_outlined),
-                title: const Text("Requested Items"),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  // TODO: Link to OrderedItemsScreen
-                },
-              ),
-
-              ListTile(
-                leading: const Icon(Icons.pending_actions_outlined),
-                title: const Text("Pending Exchanges"),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PendingExchangesScreen()),
-                  );
-                },
-              ),
             ],
           );
         },
