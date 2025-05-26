@@ -45,7 +45,8 @@ class SupabaseService {
         .from('items')
         .select()
         .neq('user_id', _userId!)
-        .eq('is_deleted', false);
+        .eq('is_deleted', false)
+        .eq('is_requested', false);
 
     return query.asStream().map(
           (data) => List<Map<String, dynamic>>.from(data),
@@ -138,6 +139,13 @@ class SupabaseService {
     final requesterId = request['requester_id'];
     final itemId = request['item_id'];
 
+    if (accepted) {
+      await _client
+          .from('items')
+          .update({'is_requested': true})
+          .eq('id', itemId);
+    }
+
     // 3. Get item name for message
     final item = await getItemById(itemId);
     final itemName = item?['name'] ?? 'your item';
@@ -171,7 +179,7 @@ class SupabaseService {
     return _client
         .from('notifications')
         .stream(primaryKey: ['id'])
-        .eq('user_id', _userId!)
+        .eq('recipient_id', _userId!)
         .order('created_at', ascending: false)
         .map((data) => List<Map<String, dynamic>>.from(data));
   }
