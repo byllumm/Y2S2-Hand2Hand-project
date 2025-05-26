@@ -422,7 +422,8 @@ class SupabaseService {
     });
   }
 
-  void signOut() {
+  Future<void> signOut() async {
+    await _client.auth.signOut();
     _loggedInUsername = null;
     _userId = null;
     print('User signed out');

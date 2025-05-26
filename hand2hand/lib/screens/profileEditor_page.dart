@@ -163,7 +163,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 child: ElevatedButton(
                   onPressed: _loading ? null : _saveProfile,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFD53F),
+                    backgroundColor: Color.fromARGB(223, 255, 213, 63),
                     foregroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
@@ -182,6 +182,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               color: Colors.white,
                             ),
                           ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () async {
+                    await widget.supabaseService.signOut();
+                    if (context.mounted) {
+                      Navigator.of(context).pushReplacementNamed('/welcome');
+                    }
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Color.fromARGB(255, 222, 79, 79),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 222, 79, 79),
+                      width: 3,
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    'Logout',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Color.fromARGB(255, 222, 79, 79),
+                    ),
+                  ),
                 ),
               ),
             ],
