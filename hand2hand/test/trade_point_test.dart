@@ -14,7 +14,7 @@ void main() {
           home: TradePoint(
             latitude: latitude,
             longitude: longitude,
-            imageUrl: null, // <-- No image, avoids network call
+            imageUrl: null,
           ),
         ),
       );
@@ -28,7 +28,7 @@ void main() {
           home: TradePoint(
             latitude: latitude,
             longitude: longitude,
-            imageUrl: null, // <-- No image, avoids network call
+            imageUrl: null,
           ),
         ),
       );
@@ -44,7 +44,7 @@ void main() {
           home: TradePoint(
             latitude: latitude,
             longitude: longitude,
-            imageUrl: null, // <-- No image, avoids network call
+            imageUrl: null,
           ),
         ),
       );
