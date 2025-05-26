@@ -14,15 +14,29 @@ class Controller extends StatelessWidget {
           Spacer(),
           Text(
             'Welcome to Hand2Hand',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(223, 255, 213, 63),
+              letterSpacing: 1.2,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 30),
+            child: Image.asset('assets/logo.png', height: 250),
           ),
           SizedBox(height: 50),
           Center(
             child: ElevatedButton(
               onPressed: () {
-                navigateToSignInScreen(context); // Navigate to SignInScreen
+                navigateToSignInScreen(context);
               },
               style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(223, 255, 213, 63),
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 textStyle: TextStyle(fontSize: 18),
               ),
@@ -33,9 +47,14 @@ class Controller extends StatelessWidget {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                navigateToSignUpScreen(context); // Navigate to SignUpScreen
+                navigateToSignUpScreen(context);
               },
               style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(223, 255, 213, 63),
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 textStyle: TextStyle(fontSize: 18),
               ),

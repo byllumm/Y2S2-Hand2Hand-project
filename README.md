@@ -41,7 +41,7 @@ Thank you!
 
 ### Product Vision
 
-For environmentally-conscious communities, who want to reduce food waste and share surplus food, Hand2Hand is a neighborhood-sharing app that enables easy donating, exchanging, and selling of food items. Unlike traditional food banks or marketplaces, our app offers a hyper-local, real-time solution tailored for neighbors to connect effortlessly.
+For environmentally-conscious communities, who want to reduce food waste and share surplus food, Hand2Hand is a neighborhood-sharing app that enables easy donating of food items. Unlike traditional food banks or marketplaces, our app offers a hyper-local, real-time solution tailored for neighbors to connect effortlessly.
 
 ### Features and Assumptions
 
