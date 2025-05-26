@@ -13,7 +13,7 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sign In')),
+      appBar: AppBar(title: Text('Log In')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -32,6 +32,13 @@ class SignInScreen extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 key: Key('signInButton'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(223, 255, 213, 63),
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
                 onPressed: () async {
                   final username = _usernameController.text;
                   final password = _passwordController.text;
@@ -48,9 +55,7 @@ class SignInScreen extends StatelessWidget {
                       );
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
+                        MaterialPageRoute(builder: (context) => HomePage()),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -63,7 +68,7 @@ class SignInScreen extends StatelessWidget {
                     );
                   }
                 },
-                child: Text('Sign In'),
+                child: Text('Log In'),
               ),
             ],
           ),

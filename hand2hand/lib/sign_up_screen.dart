@@ -9,10 +9,9 @@ class SignUpScreen extends StatelessWidget {
   final _locationController = TextEditingController();
   final SupabaseService _supabaseService;
 
-
   SignUpScreen({Key? key, SupabaseService? supabaseService})
-      : _supabaseService = supabaseService ?? SupabaseService(),
-        super(key: key);
+    : _supabaseService = supabaseService ?? SupabaseService(),
+      super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +49,13 @@ class SignUpScreen extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 key: Key('signUpButton'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(223, 255, 213, 63),
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
                 onPressed: () async {
                   final name = _nameController.text;
                   final username = _usernameController.text;
