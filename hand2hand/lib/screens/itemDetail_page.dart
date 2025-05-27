@@ -37,7 +37,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 
   Future<void> _checkIfRequested() async {
     try {
-      final status = await widget.supabaseService.getItemStatus(widget.item['id']);
+      final status = await widget.supabaseService.getItemStatus(
+        widget.item['id'],
+      );
       if (mounted) {
         setState(() {
           _requestMade = status['is_requested'] ?? false;
@@ -49,7 +51,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   }
 
   Future<void> fetchDonorInfo() async {
-    final donor = await widget.supabaseService.getUserById(widget.item['user_id']);
+    final donor = await widget.supabaseService.getUserById(
+      widget.item['user_id'],
+    );
     if (mounted) {
       setState(() {
         donorInfo = donor;
@@ -76,7 +80,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         return;
       }
 
-      final status = await widget.supabaseService.getItemStatus(widget.item['id']);
+      final status = await widget.supabaseService.getItemStatus(
+        widget.item['id'],
+      );
       print('Item status: $status'); // Debug log
 
       if (!status['available']) {
@@ -86,14 +92,18 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         } else if (status['is_deleted']) {
           message = 'Item has been deleted';
         }
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
         setState(() {
           _isLoading = false;
         });
         return;
       }
 
-      final success = await widget.supabaseService.requestItem(widget.item['id']);
+      final success = await widget.supabaseService.requestItem(
+        widget.item['id'],
+      );
       print('Request success: $success'); // Debug log
 
       if (success) {
@@ -104,13 +114,25 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Item requested successfully')),
         );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => ChatScreen(
+                  itemId: widget.item['id'],
+                  receiverId: widget.item['user_id'],
+                  supabaseService: widget.supabaseService,
+                  initialMessage: "I want your item ${widget.item['name']}",
+                ),
+          ),
+        );
       } else {
         setState(() {
           _isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to request item')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed to request item')));
       }
     } catch (e) {
       print('Error during request: $e');

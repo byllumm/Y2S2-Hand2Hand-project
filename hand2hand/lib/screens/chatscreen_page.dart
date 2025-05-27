@@ -11,14 +11,16 @@ class ChatScreen extends StatefulWidget {
   final int itemId;
   final int receiverId;
   final SupabaseService supabaseService;
+  final String? initialMessage;
 
   ChatScreen({
     Key? key,
     required this.itemId,
     required this.receiverId,
+    this.initialMessage,
     SupabaseService? supabaseService, // nullable param
-  })  : supabaseService = supabaseService ?? SupabaseService(),
-        super(key: key);
+  }) : supabaseService = supabaseService ?? SupabaseService(),
+       super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -48,6 +50,25 @@ class _ChatScreenState extends State<ChatScreen> {
         });
       },
     );
+    if (widget.initialMessage != null && widget.initialMessage!.isNotEmpty) {
+      Future.microtask(() => _sendAutoMessage(widget.initialMessage!));
+    }
+  }
+
+  Future<void> _sendAutoMessage(String content) async {
+    try {
+      final currentUserId = _service.currentUserId!;
+      final message = Message(
+        senderId: currentUserId,
+        receiverId: widget.receiverId,
+        itemId: widget.itemId,
+        content: content,
+        createdAt: DateTime.now().toUtc(),
+      );
+      await _service.sendMessage(message);
+    } catch (e) {
+      print('Error sending auto message: $e');
+    }
   }
 
   @override
@@ -95,8 +116,10 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _loadMessages() async {
     try {
       setState(() => _isLoading = true);
-      final messages =
-      await _service.getMessages(widget.itemId, widget.receiverId);
+      final messages = await _service.getMessages(
+        widget.itemId,
+        widget.receiverId,
+      );
 
       setState(() {
         _messages.addAll(messages);
@@ -117,18 +140,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _buildMessageBubble(Message message) {
     final isMe = message.senderId == _service.currentUserId;
-    final alignment =
-    isMe ? Alignment.centerRight : Alignment.centerLeft;
+    final alignment = isMe ? Alignment.centerRight : Alignment.centerLeft;
     final bubbleColor =
-    isMe ? const Color.fromARGB(223, 255, 233, 153) : Colors.grey[300];
+        isMe ? const Color.fromARGB(223, 255, 233, 153) : Colors.grey[300];
     final formattedTime = _formattingTime(message.createdAt);
 
     return Align(
       alignment: alignment,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-        padding:
-        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0),
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0),
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.7,
         ),
@@ -138,22 +159,16 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         child: Column(
           crossAxisAlignment:
-          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             Text(
               message.content,
-              style: GoogleFonts.outfit(
-                fontSize: 16,
-                color: Colors.black87,
-              ),
+              style: GoogleFonts.outfit(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 4),
             Text(
               formattedTime,
-              style: GoogleFonts.outfit(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
+              style: GoogleFonts.outfit(fontSize: 12, color: Colors.grey),
             ),
           ],
         ),
@@ -187,8 +202,11 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: IconButton (
-          icon: Icon(Icons.arrow_back_ios, color: Color.fromARGB(255, 222, 79, 79)),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Color.fromARGB(255, 222, 79, 79),
+          ),
           onPressed: () {
             navigateWithTransition(context, ChatListPage());
           },
@@ -208,16 +226,17 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             Expanded(
-              child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                reverse: false,
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  final message = _messages[index];
-                  return _buildMessageBubble(message);
-                },
-              ),
+              child:
+                  _isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ListView.builder(
+                        reverse: false,
+                        itemCount: _messages.length,
+                        itemBuilder: (context, index) {
+                          final message = _messages[index];
+                          return _buildMessageBubble(message);
+                        },
+                      ),
             ),
 
             Padding(
@@ -228,23 +247,35 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: TextField(
                       controller: _controller,
                       decoration: InputDecoration(
-                          hintText: 'Type a message...',
-                          hintStyle: TextStyle(color: Colors.grey[500]),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
+                        hintText: 'Type a message...',
+                        hintStyle: TextStyle(color: Colors.grey[500]),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 15,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                            color: Colors.grey[300]!,
+                            width: 1,
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                            color: Colors.grey[300]!,
+                            width: 1,
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(color: Color.fromARGB(223, 255, 213, 63), width: 2),
-                          )
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                            color: Color.fromARGB(223, 255, 213, 63),
+                            width: 2,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -266,11 +297,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ],
                       ),
-                      child : Icon(
-                        Icons.send,
-                        color: Colors.white,
-                        size: 24,
-                      ),
+                      child: Icon(Icons.send, color: Colors.white, size: 24),
                     ),
                   ),
                 ],
