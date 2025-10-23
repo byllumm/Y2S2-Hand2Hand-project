@@ -233,7 +233,7 @@ In this section you should start by briefly describing the components of the pro
 ### Logical architecture
 
 <p align="center" justify="center">
- <img src =images/models/logical_architecture
+ <img src =images/models/logical_architecture.png
   />
 </p>
 
